@@ -80,7 +80,7 @@
               <!-- MOBILE MENU HEADER TITLE PLUS CLOSE BUTTON -->
               <div class="flex items-center justify-between pb-3">
                 <div>
-                  <h1 class="text-lg text-gray-500">{{ section.settings.mobile_menu_title }}</h1>
+                  <h1 class="text-lg text-gray-500">{{ section.settings.menu_title }}</h1>
                 </div>
                 <div class="-mr-2">
                   <button
@@ -146,12 +146,12 @@
 
 {% schema %}
   {
-    "name": "Mobile menu title",
+    "name": "Menu",
     "settings": [
       {
         "type": "text",
-        "id": "mobile_menu_title",
-        "label": "Mobile menu title",
+        "id": "menu_title",
+        "label": "Menu title",
         "default": "Menu"
       },
       {

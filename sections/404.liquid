@@ -1,0 +1,44 @@
+<h1 class="text-3xl font-bold">{{ section.settings.main_title }}</h1>
+<p class="mt-4">{{ section.settings.description }}</p>
+
+{% if section.settings.button_url != blank %}
+  {% assign button_url = section.settings.button_url %}
+
+  {% else %}
+  {% assign button_url = shop.secure_url %}
+{% endif %}
+
+<a href="{{button_url}}" class="mt-4 px-4 py-2 bg-green-700 hover:bg-green-900 text-white">{{section.settings.button_title}}</a>
+
+{% schema %}
+  {
+    "name": "404",
+    "tag": "section",
+    "class": "flex flex-col justify-center items-center h-screen",
+    "settings": [
+      {
+        "type": "text",
+        "id": "main_title",
+        "label": "Main title",
+        "default": "Not found"
+      },
+      {
+        "type": "text",
+        "id": "description",
+        "label": "Description",
+        "default": "The page you were looking for does not exist"
+      },
+      {
+        "type": "text",
+        "id": "button_title",
+        "label": "Button title",
+        "default": "Return to homepage"
+      },
+      {
+        "type": "url",
+        "id": "button_url",
+        "label": "Button url"
+      }
+    ]
+  }
+{% endschema %}
