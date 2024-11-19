@@ -1,0 +1,17 @@
+{
+  "name": "elizabeth",
+  "version": "1.0.0",
+  "description": "[![Generic badge](https://img.shields.io/badge/course%20available%3F-yes-green.svg)](https://shields.io/)",
+  "main": "index.js",
+  "scripts": {
+    "watch": "npx tailwindcss -i ./src/tailwind.css -o ./assets/application.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier-plugin-liquid": "^0.0.1-security",
+    "tailwindcss": "^3.4.14"
+  }
+}
