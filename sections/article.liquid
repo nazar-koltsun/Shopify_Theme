@@ -1,0 +1,161 @@
+<article>
+  {% for block in section.blocks %}
+    {% if block.type == 'article_title' %}
+      <div class="flex flex-col items-center gap-1 px-4">
+        <a href="{{blog.url}}" class="font-bold text-gray-400 hover:text-gray-600">{{ blog.title }}</a>
+        <h1 class="font-bold text-3xl">{{ article.title }}</h1>
+      </div>
+    {% endif %}
+
+    {% if block.type == 'article_author' and section.settings.enable_author_name %}
+      <small class="block mt-2 text-center text-base px-4">{{ article.author }}</small>
+    {% endif %}
+
+    {% if block.type == 'article_date' and section.settings.enable_published_date %}
+      <time class="block mt-2 text-center text-xs px-4" datetime="{{ article.published_at | date: format: "short" }}">{{ article.published_at | date: format: "short" }}</time>
+    {% endif %}
+
+    {% if block.type == 'article_image' %}
+      <div class="mx-auto max-w-7xl my-4 rounded-[20px] overflow-hidden">
+        {% if article.image != blank %}
+          <img
+            class="flex aspect-[16/9] md:aspect-[16/6]"
+            src="{{ article.image | img_url: 'large' }}"
+            width="{{article.image.width}}"
+            height="{{article.image.height}}"
+            alt="{{ article.image.alt }}">
+
+        {% else %}
+          {{ 'collection-1' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.type == 'article_content' %}
+      <div class="mx-auto mt-8 max-w-4xl px-4">{{ article.content }}</div>
+    {% endif %}
+  {% endfor %}
+</article>
+
+{% if blog.comments_enabled? %}
+  <div id="comments">
+    {% if article.comments_count > 0 %}
+
+      <div class="mx-auto mt-8 max-w-4xl px-4 py-8">
+        <h2 class="text-2xl font-medium">What people saying:</h2>
+
+        {% paginate article.comments by 5 %}
+          <div class="space-y-3 mt-4">
+            {% for comment in article.comments %}
+              <div class="border py-2 px-3 shadow">
+                <p>{{ comment.author }}: {{ comment.content }}</p>
+              </div>
+            {% endfor %}
+
+            {% if paginate.pages > 1 %}
+              <div class="mt-4">
+                {{ paginate | default_pagination }}
+              </div>
+            {% endif %}
+          </div>
+        {% endpaginate %}
+
+      </div>
+      
+    {% else %}
+      There is no comments
+    {% endif %}
+  </div>
+
+  <div id="comment_form" class="mx-auto mt-8 max-w-4xl px-4 py-8 bg-white rounded shadow-md">
+    {% form 'new_comment'
+      , article %}
+      {% if form.posted_successfully? %}
+        <p class="text-green-500">Comment submitted successfully!</p>
+      {% else form.errors %}
+        <ol class="text-red-500 mb-4">
+          {% for error in form.errors %}
+            <li class="text-sm">{{error}}: {{ form.errors.messages[error] }}</li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+
+      <label for="comment_author" class="block text-gray-700 text-sm font-bold mb-2">Author:</label>
+      <input
+        type="text"
+        id="comment_author"
+        name="comment[author]"
+        placeholder="Jon Doe"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+
+      <label for="comment_emain" class="block text-gray-700 text-sm font-bold mb-2 mt-4">Email:</label>
+      <input
+        type="email"
+        id="comment_emain"
+        name="comment[email]"
+        placeholder="jondoe@gmail.com"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+
+      <label for="comment_content" class="block text-gray-700 text-sm font-bold mb-2 mt-4">Leave a comment:</label>
+      <textarea
+        type="textarea"
+        id="comment_content"
+        name="comment[body]"
+        placeholder="Comment Text"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"></textarea>
+
+      <button type="submit" class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">Submit comment</button>
+    {% endform %}
+  </div>
+{% endif %}
+
+
+{% schema %}
+  {
+    "name": "article",
+    "tag": "div",
+    "class": "py-8",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_author_name",
+        "default": true,
+        "label": "Display author name"
+      }, {
+        "type": "checkbox",
+        "id": "enable_published_date",
+        "default": true,
+        "label": "Display Published Date"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "article_title",
+        "name": "Title",
+        "limit": 1
+      },
+      {
+        "type": "article_author",
+        "name": "Author",
+        "limit": 1
+      },
+      {
+        "type": "article_date",
+        "name": "Published Date",
+        "limit": 1
+      },
+      {
+        "type": "article_image",
+        "name": "Featured image",
+        "limit": 1
+      }, {
+        "type": "article_content",
+        "name": "Content",
+        "limit": 1
+      }
+    ]
+  }
+{% endschema %}

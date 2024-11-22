@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "main": {
+      "type": "article",
+      "blocks": {
+        "title": {
+          "type": "article_title",
+        },
+        "author": {
+          "type": "article_author",
+        },
+        "date": {
+          "type": "article_date",
+        },
+        "image": {
+          "type": "article_image",
+        },
+        "content": {
+          "type": "article_content",
+        }
+      },
+      "block_order": ["title", "author", "date", "image", "content"]
+    }
+  },
+  "order": ["main"]
+}
