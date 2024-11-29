@@ -1,32 +1,50 @@
 {% assign per_page = section.settings.articles_per_page %}
 
-{% paginate blog.articles by per_page %}
+<div class="max-w-6xl m-auto mt-8 px-4">
+  {% paginate blog.articles by per_page %}
 
+    <h1 class="text-3xl font-bold text-center">{{ blog.title }}</h1>
 
-  {% for article in blog.articles %}
-    {% if article.image %}
-      <img src="{{ article.image | img_url: 'medium' }}" alt="{{ article.image.alt }}">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      {% for article in blog.articles %}
+        <div class="flex flex-col bg-white shadow-lg rounded-lg overflow-hidden">
+          {% if article.image %}
+            <img
+              class="w-full h-40 object-cover flex-shrink-0"
+              width="254"
+              height="160"
+              src="{{ article.image | img_url: 'medium' }}"
+              alt="{{ article.image.alt }}">
 
-    {% else %}
-      {{ 'collection-1' | placeholder_svg_tag: 'w-40' }}
+          {% else %}
+            {{ 'collection-1' | placeholder_svg_tag: 'w-full h-40 object-cover flex-shrink-0' }}
+          {% endif %}
+
+          <div class="flex h-[100%] flex-col items-start p-4">
+            <h2 class="text-xl font-medium">{{ article.title }}</h2>
+
+            {% if article.excerpt.size > 0 %}
+              <p class="mt-2 pb-4">
+                {{ article.excerpt | strip_html | truncatewords: 20 }}
+              </p>
+            {% else %}
+              <p class="mt-2 pb-4">
+                {{ article.content | strip_html | truncatewords: 20 }}
+              </p>
+            {% endif %}
+
+            <a class="inline-flex text-white mt-auto px-3 py-2 rounded bg-blue-600 hover:bg-blue-700" href="{{ article.url }}">{{ section.settings.read_more }}</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if paginate.pages > 1 %}
+      {{ paginate | default_pagination }}
     {% endif %}
 
-    <h1>{{ article.title }}</h1>
-
-    {% if article.excerpt.size > 0 %}
-
-    {% else %}
-      <p>
-        {{ article.content | strip_html | truncatewords: 20 }}
-      </p>
-    {% endif %}
-  {% endfor %}
-
-  {% if paginate.pages > 1 %}
-    {{ paginate | default_pagination }}
-  {% endif %}
-
-{% endpaginate %}
+  {% endpaginate %}
+</div>
 
 {% schema %}
   {
@@ -40,6 +58,12 @@
         "min": 1,
         "max": 15,
         "default": 3
+      },
+      {
+        "type": "text",
+        "id": "read_more",
+        "label": "Read more label",
+        "default": "Read more"
       }
     ]
   }
