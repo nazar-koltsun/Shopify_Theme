@@ -48,7 +48,7 @@
       <div class="mx-auto mt-8 max-w-4xl px-4 py-8">
         <h2 class="text-2xl font-medium">What people saying:</h2>
 
-        {% paginate article.comments by 5 %}
+        {% paginate article.comments by 2 %}
           <div class="space-y-3 mt-4">
             {% for comment in article.comments %}
               <div class="border py-2 px-3 shadow">
@@ -56,11 +56,7 @@
               </div>
             {% endfor %}
 
-            {% if paginate.pages > 1 %}
-              <div class="mt-4">
-                {{ paginate | default_pagination }}
-              </div>
-            {% endif %}
+            {% render 'pagination', pagination: paginate  %}
           </div>
         {% endpaginate %}
 

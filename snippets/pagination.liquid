@@ -1,0 +1,20 @@
+{% if pagination.pages > 1 %}
+  <div class="mt-10 flex justify-center gap-2">
+    {% if pagination.previous %}
+      <a href="{{ pagination.previous.url }}">{{ pagination.previous.title }}</a>
+    {% endif %}
+
+    <!-- Page Numbers -->
+    {% for part in pagination.parts %}
+      {% if part.is_link %}
+        <a class="px-2 border border-gray-400 rounded-sm" href="{{ part.url }}{{ anchor }}">{{ part.title }}</a>
+        {% else %}
+        <strong class="px-2 border border-gray-400 rounded-sm">{{ part.title }}</strong>
+      {% endif %}
+    {% endfor %}
+
+    {% if pagination.next %}
+      <a  href="{{ pagination.next.url }}">{{ pagination.next.title }}</a>
+    {% endif %}
+  </div>
+{% endif %}
