@@ -1,46 +1,96 @@
 {% if cart.item_count > 0 %}
-  <h1>cart</h1>
-  <form action="/cart" method="post" novalidate>
-    <table>
-      <thead>
-        <th colspan="2">Prod</th>
-        <th>Price</th>
-        <th>Qty</th>
-        <th>total</th>
-      </thead>
-      <tbody>
-        {% for item in cart.items %}
-          <tr>
-            <td>
-              <a href="{{ item.url | within: collections.all }}">
-                <img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}">
-              </a>
-            </td>
-            <td>
-              <a href="{{ item.url }}">{{ item.product.title }}</a>
-              {{ item.variant.title }}
-              <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0">remove</a>
-            </td>
-            <td>{{ item.price | money }}</td>
-            <td>
-              <input type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
-            </td>
-            <td>
-              {% if item.original_line_price != item.line_price %}{{ item.original_line_price | money }}{% endif %}
-              {{ item.line_price | money }}
-              {% for discount in item.discounts %}{{ discount.title }}{% endfor %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <div>
-      <p>sub total : {{ cart.total_price | money }}</p>
-      <button type="submit" name="update">Update</button>
-      <button type="submit" name="checkout">Checkout</button>
+  <div class="max-w-6xl mx-auto mt-8 py-4 px-4">
+    <div class="flex justify-between gap-4 ">
+      <h1 class="text-2xl font-semibold">Your cart</h1>
+      <a class="medium text-blue-600 hover:underline" href="{{ routes.all_products_collection_url }}">Continue shoping</a>
     </div>
-  </form>
+
+    <form
+      action="{{ routes.cart_url }}"
+      method="post"
+      novalidate
+      class="mt-12">
+      <table class="w-full">
+        <thead class="border-b border-b-gray-300">
+          <th class="text-left w-full p-4">Prod</th>
+          <th class="text-left p-4">Price</th>
+          <th class="text-left p-4">Qty</th>
+          <th class="text-left p-4">total</th>
+        </thead>
+        <tbody>
+          {% for item in cart.items %}
+            <tr>
+              <td class="p-4">
+                <div>
+                  <a class="flex flex-col items-left gap-2" href="{{ item.url | within: collections.all }}">
+                    {% if item.image %}
+                      <img
+                        width="100"
+                        height="100"
+                        class="text-center"
+                        src="{{ item | img_url: 'small' }}"
+                        alt="{{ item.title | escape }}">
+
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag: 'w-20 h-20 object-cover' }}
+                    {% endif %}
+
+                    <span>{{ item.product.title }}</span>
+                    {{ item.variant.title }}
+                  </a>
+                  <a class="text-red-500 hover:underline mt-4 block" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0">remove</a>
+
+                </div>
+              </td>
+              <td class="p-4">{{ item.price | money }}</td>
+              <td class="p-4">
+                <input
+                  type="number"
+                  name="updates[]"
+                  id="updates_{{ item.key }}"
+                  value="{{ item.quantity }}"
+                  min="1"
+                  class="w-12">
+              </td>
+              <td class="p-4">
+                {% if item.original_line_price != item.line_price %}
+                  {{ item.original_line_price | money }}{% endif %}
+                {{ item.line_price | money }}
+                {% for discount in item.discounts %}
+                  {{ discount.title }}{% endfor %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="flex justify-between gap-4 mt-8">
+        <div class="flex flex-col w-full">
+          <label for="cart-notes" class="text-xl font-medium">Cart Notes</label>
+          <textarea
+            class="w-full max-w-md h-36 border border-gray-700 rounded-md p-2"
+            name="note"
+            id="cart-notes"
+            placeholder="Add special instructions for your order">{{ cart.note }}</textarea>
+        </div>
+        <div>
+          <p class="text-xl font-medium">Sub total: {{ cart.total_price | money }}</p>
+          <div class="flex flex-col mt-4 gap-2">
+            <button
+              type="submit"
+              class="py-2 px-3 border border-gray-700 hover:opacity-70"
+              name="update">Update</button>
+            <button
+              type="submit"
+              class="bg-gray-700 text-white py-2 px-3 border border-opacity-0 hover:opacity-70"
+              name="checkout">Checkout</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 {% else %}
-  <h2>cart</h2>
-  Cart is empty
+  <div class="flex flex-col items-center max-w-6xl py-4 px-4 gap-4">
+    <h1 class="text-2xl font-semibold">Your Cart is empty</h1>
+    <a class="block py-1 px-3 text-white bg-slate-600 hover:bg-slate-800" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
+  </div>
 {% endif %}
