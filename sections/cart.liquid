@@ -72,18 +72,26 @@
             id="cart-notes"
             placeholder="Add special instructions for your order">{{ cart.note }}</textarea>
         </div>
-        <div>
-          <p class="text-xl font-medium">Sub total: {{ cart.total_price | money }}</p>
-          <div class="flex flex-col mt-4 gap-2">
-            <button
-              type="submit"
-              class="py-2 px-3 border border-gray-700 hover:opacity-70"
-              name="update">Update</button>
-            <button
-              type="submit"
-              class="bg-gray-700 text-white py-2 px-3 border border-opacity-0 hover:opacity-70"
-              name="checkout">Checkout</button>
-          </div>
+        <div class="min-w-[200px] flex flex-col mt-4 gap-2">
+          {% for block in section.blocks %}
+            {% if block.type == 'sub_total' %}
+              <p class="text-xl font-medium">Sub total: {{ cart.total_price | money }}</p>
+            {% endif %}
+
+            {% if block.type == 'update_btn' %}
+              <button
+                type="submit"
+                class="py-2 px-3 border border-gray-700 hover:opacity-70"
+                name="update">Update</button>
+            {% endif %}
+
+            {% if block.type == 'checkout_btn' %}
+              <button
+                type="submit"
+                class="bg-gray-700 text-white py-2 px-3 border border-opacity-0 hover:opacity-70"
+                name="checkout">Checkout</button>
+            {% endif %}
+          {% endfor %}
         </div>
       </div>
     </form>
@@ -94,3 +102,25 @@
     <a class="block py-1 px-3 text-white bg-slate-600 hover:bg-slate-800" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
   </div>
 {% endif %}
+
+{% schema %}
+  {
+    "name": "cart",
+
+    "blocks": [
+      {
+        "type": "sub_total",
+        "name": "Sub Total",
+        "limit": 1
+      }, {
+        "type": "update_btn",
+        "name": "Update Button",
+        "limit": 1
+      }, {
+        "type": "checkout_btn",
+        "name": "Checkout Button",
+        "limit": 1
+      }
+    ]
+  }
+{% endschema %}

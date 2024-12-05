@@ -1,8 +1,21 @@
 {
   "sections": {
     "main": {
-      "type": "cart"
-    }
+      "type": "cart",
+      "blocks": {
+        "sub_total": {
+          "type": "sub_total",
+        },
+        "update_btn": {
+          "type": "update_btn",
+        },
+        "checkout_btn": {
+          "type": "checkout_btn",
+        }
+      },
+      "block_order": ["sub_total", "update_btn", "checkout_btn"]
+    },
   },
+
   "order": ["main"]
 }
