@@ -1,34 +1,38 @@
+{% assign products_per_page = section.settings.products_per_page %}
 
 <div class="max-w-6xl m-auto mt-8 px-4">
   <h1 class="text-3xl font-bold text-center">{{ collection.title }}</h1>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-    {% paginate collection.products by 5 %}
+  {% paginate collection.products by products_per_page %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
       {% for product in collection.products %}
-        <div class="flex flex-col  bg-white shadow-lg rounded-lg overflow-hidden">
-          <a href="{{ product.url | within: collection }}">
-            {% if product.featured_image %}
-              <img src="{{ product.featured_image.src | img_url: 'medium' }}" alt="{{ product.featured_image.alt | escape }}" width="100" height="100" class="flex w-full h-[230px] object-cover">
-              {% else %}
-                {{ 'product-1' | placeholder_svg_tag: 'flex w-full h-[230px] object-cover' }}
-            {% endif %}
-          </a>
-          <div class="flex h-[100%] flex-col items-center p-4 gap-4">
-            <span class="text-gray-500">{{ product.vendor }}</span>
-            <a class="text-center" href="{{ product.url | within: collection }}">{{ product.title }}</a>
-            <span class="font-semibold">
-              {{ product.price | money }}
-            </span>
-            {% unless product.available %}<br><strong>sold out</strong>{% endunless %}
-          </div>
-        </div>
+        {% render 'product-card'
+          , product: product %}
       {% else %}
         <p>no matches</p>
       {% endfor %}
-      {% if paginate.pages > 1 %}
-        {% render 'pagination', pagination: paginate  %}
-      {% endif %}
-    {% endpaginate %}
+    </div>
+    {% if paginate.pages > 1 %}
+      {% render 'pagination'
+        , pagination: paginate %}
+    {% endif %}
+  {% endpaginate %}
 
-  </div>
 </div>
+
+{% schema %}
+  {
+    "name": "Collection",
+    "settings": [
+      {
+        "type": "range",
+        "id": "products_per_page",
+        "label": "Number of products per page",
+        "step": 1,
+        "min": 1,
+        "max": 15,
+        "default": 5
+      }
+    ]
+  }
+{% endschema %}
