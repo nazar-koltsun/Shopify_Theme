@@ -1,0 +1,33 @@
+<div class="max-w-6xl mx-auto mt-8 py-4 px-4">
+  <h1 class="text-3xl font-bold text-center">{{ section.settings.title }}</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 mt-12 gap-6">
+    {% for collection in collections %}
+      {% if collection.all_products_count > 0 %}  
+        <a href="{{ collection.url }}" class="flex flex-col items-center border border-neutral-300 h-60 group overflow-hidden relative">
+            {% if collection.featured_image %}
+              <img class="w-full h-full object-cover group-hover:scale-110 transition" width="100" height="100" src="{{ collection.featured_image.src | img_url: 'large' }}" alt="{{ collection.featured_image.alt }}">
+            {% endif %}
+
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-medium bg-gray-200 py-1 px-2 rounded shadow-sm">
+              {{ collection.title }}
+            </div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "List Collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Collections"
+    }
+  ]
+}
+{% endschema %}

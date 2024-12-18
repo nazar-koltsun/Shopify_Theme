@@ -1,6 +1,7 @@
 {% assign products_per_page = section.settings.products_per_page %}
 
 <div class="max-w-6xl m-auto mt-8 px-4">
+    <a class="text-base text-gray-500 hover:underline mb-4" href="{{ routes.collections_url }}">Go back to collections</a>
   <h1 class="text-3xl font-bold text-center">{{ collection.title }}</h1>
 
   {% paginate collection.products by products_per_page %}
