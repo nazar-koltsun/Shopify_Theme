@@ -1,0 +1,12 @@
+<div class="group flex flex-col  bg-white shadow-lg rounded-lg overflow-hidden">
+  <div>
+    {{ 'product-1' | placeholder_svg_tag: 'flex w-full h-[230px] object-cover transition duration-1000 group-hover:scale-125' }}
+  </div>
+  <div class="flex h-[100%] flex-col items-center p-4 gap-4">
+    <span class="text-gray-500">Nike</span>
+    <div class="text-center">T-Shirt</div>
+    <span class="font-semibold">
+      {{ '2500'| money }}
+    </span>
+  </div>
+</div>

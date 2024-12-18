@@ -1,0 +1,50 @@
+{% assign products_count = section.settings.products_count %}
+
+<div class="max-w-6xl m-auto mt-8 px-4">
+  <h1 class="text-3xl font-bold text-center">{{ section.settings.title }}</h1>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
+    {% if section.settings.featured_collection.products.size > 10 %}
+      {% for product in section.settings.featured_collection.products limit: products_count %}
+        {% render 'product-card'
+          , product: product %}
+      {% endfor %}
+
+
+    {% else %}
+      {% for product in (1..4) %}
+        {% render 'product-card-placeholder' %}
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Featured collection",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Featured collection"
+      }, {
+        "type": "collection",
+        "id": "featured_collection",
+        "label": "Collection"
+      }, {
+        "type": "range",
+        "id": "products_count",
+        "label": "Products Count",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4
+      }
+    ],
+    "presets": [
+      {"name": "featured_collection"}
+    ]
+  }
+{% endschema %}
