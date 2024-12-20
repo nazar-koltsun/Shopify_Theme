@@ -1,0 +1,66 @@
+<div id="contact_form" class="mx-auto mt-16 max-w-xl px-4 py-8 bg-white rounded shadow-md">
+  {% form 'contact' %}
+
+    {% if section.settings.title != blank %}
+      <h2 class="text-3xl font-bold">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% if form.posted_successfully? %}
+      <p class="text-green-500">Your message submitted successfully!</p>
+    {% else form.errors %}
+      <ol class="text-red-500 mb-4">
+        {% for error in form.errors %}
+          <li class="text-sm">{{ error }}: {{ form.errors.messages[error] }}</li>
+        {% endfor %}
+      </ol>
+    {% endif %}
+
+    <div class="flex flex-col space-y-4 mt-6">
+      <div>
+        <label for="contact-name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+        <input
+          type="text"
+          name="contact[name]"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="contact-name" />
+      </div>
+  
+      <div class="email">
+        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+        <input
+          type="email"
+          name="contact[email]"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="email" />
+      </div>
+  
+      <div class="message">
+        <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+        <textarea
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        name="contact[body]" id="message"></textarea>
+      </div>
+  
+      <button class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">Submit</button>
+    </div>
+  {% endform %}
+</div>
+
+
+{% schema %}
+  {
+    "name": "Contact form",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Form title"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Contact form"
+      }
+    ]
+  }
+{% endschema %}
