@@ -1,13 +1,13 @@
-<div class="group flex flex-col  bg-white shadow-lg rounded-lg overflow-hidden">
-  <a href="{{ product.url | within: collection }}">
+<div class="group flex flex-col  bg-white shadow-lg rounded-lg">
+  <a class="overflow-hidden w-full h-[230px] flex-shrink-0" href="{{ product.url | within: collection }}">
     {% if product.featured_image %}
       <img src="{{ product.featured_image.src | img_url: 'medium' }}" alt="{{ product.featured_image.alt | escape }}" width="100" height="100" class="flex w-full h-[230px] object-cover transition duration-1000 group-hover:scale-125">
       {% else %}
-        {{ 'product-1' | placeholder_svg_tag: 'flex w-full h-[230px] object-cover transition duration-1000 group-hover:scale-125' }}
+        {{ 'product-1' | placeholder_svg_tag: 'flex w-full h-full object-cover transition duration-1000 group-hover:scale-125' }}
     {% endif %}
   </a>
   <div class="flex h-[100%] flex-col items-center p-4 gap-4">
-    <span class="text-gray-500">{{ product.vendor }}</span>
+    <span class="flex min-h-12 text-gray-500 text-center">{{ product.vendor }}</span>
     <a class="text-center" href="{{ product.url | within: collection }}">{{ product.title }}</a>
     <span class="font-semibold">
       {{ product.price | money }}

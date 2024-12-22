@@ -29,7 +29,8 @@
                   <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
 
                     {% for sublink in link.links %}
-                      <a href="{{sublink.url}}" class="-m-3 p-3 flex items start rounded-lg hover:bg-gray-100">
+                      <a href="{{sublink.url}}" class="m-3 p-3 flex items start rounded-lg hover:bg-gray-100"
+                      style="{% if link.active %}color: black{% endif %}">
                         <div class="ml-4">
                           <p class="text-gray-900 text-base font-medium">
                             {{ sublink.title }}
@@ -42,7 +43,10 @@
               </div>
 
             {% else %}
-              <a href="{{link.url}}" class="text-base text-gray-500 hover:text-gray-900">{{ link.title }}</a>
+              <a href="{{link.url}}" 
+              class="text-base text-gray-500 hover:text-gray-900"
+              style="{% if link.active %}color: black{% endif %}"
+              >{{ link.title }}</a>
             {% endif %}
 
           </div>

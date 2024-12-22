@@ -1,0 +1,12 @@
+{
+  "wrapper": "div.text-center",
+  "sections": {
+    "template": {
+      "type": "page"
+    },
+    "contact-form": {
+      "type": "contact-form"
+    }
+  },
+  "order": ["template", "contact-form"]
+}
