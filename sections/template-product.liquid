@@ -2,6 +2,7 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
+{% assign selected_product = product.selected_or_first_available_variant %}
 
 <style>
   .mySwiper,
@@ -98,16 +99,104 @@
     </div>
 
     <div>
-      Product description
+      {% form 'product'
+        , product %}
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when "vendor" %}
+              <p class="text-gray-500">{{ product.vendor }}</p>
+
+            {% when "title" %}
+              <h1 class="text-3xl font-bold mt-4">{{ product.title }}</h1>
+
+            {% when "price" %}
+              <div class="flex gap-3 items-center mt-4">
+                {% if selected_product.compare_at_price %}
+                  <span class="line-through">{{ selected_product.compare_at_price | money }}</span>
+                {% endif %}
+
+                <span class="font-bold">{{ selected_product.price | money }}</span>
+
+                {% if selected_product.compare_at_price > selected_product.price %}
+                  <span class="inline-block py-1 px-5 text-white text-sm bg-red-600 rounded-2xl">Sale</span>
+                {% endif %}
+              </div>
+
+            {% when "variants" %}
+              <div class="mt-4">
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{ selected_product.id }}">
+                {% unless product.has_only_default_variant %}
+                  <div data-url="{{ product.url }}" data-section="{{ section.id }}">
+                    {% for option in product.options_with_values %}
+                      <p class="mt-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2 text-left" for="option-{{ forloop.index0 }}">{{ option.name }}</label>
+                        <select
+                          class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                          name="{{option.name }}"
+                          id="option-{{ forloop.index0 }}">
+                          {% for value in option.values %}
+                            <option
+                              value="{{ value }}"
+                              {% if option.selected_value == value %}
+                              selected="selected"
+                              {% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                      </p>
+                    {% endfor %}
+                  </div>
+                {% endunless %}
+              </div>
+
+
+            {% when "quantity" %}
+              <p class="mt-4 w-20">
+                <label class="block text-gray-700 text-sm font-bold mb-2 text-left" for="Quantity">Quantity</label>
+                <input
+                  class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                  type="number"
+                  id="Quantity"
+                  name="quantity"
+                  value="1"
+                  min="1">
+              </p>
+
+            {% when "description" %}
+              <p class="mt-4">
+                {{ product.description }}
+              </p>
+
+            {% when "add_to_cart" %}
+              <button
+                class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 disabled:bg-gray-500 disabled:pointer-events-none"
+                type="submit"
+                {% if selected_product.available == false %}
+                disabled
+                {% endif %}>
+                {% if selected_product.available == false %}
+                  Sold out
+                {% else %}
+                  Add to cart
+                {% endif %}
+              </button>
+
+            {% else %}
+          {% endcase %}
+
+          {% endfor %}
+        {% endform %}
+
+
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Initialize Swiper -->
-<script>
+  <!-- Initialize Swiper -->
+  <script>
     const interval = setInterval(() => {
-      console.log("hi");
-
       if(!window?.Swiper) return;
 
       const swiper = new Swiper(".mySwiper", {
@@ -118,7 +207,7 @@
         watchSlidesProgress: true,
         navigation: false
       });
-  
+      
       const swiper2 = new Swiper(".mySwiper2", {
         // loop: true,
         spaceBetween: 10,
@@ -131,35 +220,45 @@
       document.querySelector('.mySwiper').style.display = 'block';
 
       clearInterval(interval);
-    }, 200)
-</script>
+    }, 100)
+  </script>
 
-{% comment %} {% assign current_variant = product.selected_or_first_available_variant %}
-                  {% assign featured_image = current_variant.featured_image | default: product.featured_image %}
-                  <img src="{{ featured_image | img_url: 'large' }}" alt="{{ featured_image.alt | escape }}" id="ProductPhotoImg">
-                  {% for image in product.images %}
-                    <a href="{{ image.src | img_url: 'large' }}">
-                      <img src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
-                    </a>
-                  {% endfor %}
-                  <h1>{{ product.title }}</h1>
-                  <form action="/cart/add" method="post" enctype="multipart/form-data" id="AddToCartForm">
-                    <select name="id" id="productSelect">
-                      {% for variant in product.variants %}
-                        {% if variant.available %}
-                          <option value="{{ variant.id }}">
-                            {{ variant.title }} - {{ variant.price | money_with_currency }}
-                          </option>
-                        {% else %}
-                          <option disabled="disabled">
-                            {{ variant.title }} - sold out
-                          </option>
-                        {% endif %}
-                      {% endfor %}
-                    </select>
-                    {{ current_variant.price | money }}
-                    <label for="Quantity">quantity</label>
-                    <input type="number" id="Quantity" name="quantity" value="1" min="1">
-                    <button type="submit" name="add" id="AddToCart">Add to cart</button>
-                  </form>
-<div>{{ product.description }}</div> {% endcomment %}
+  {% schema %}
+    {
+      "name": "Product",
+      "blocks": [
+        {
+          "type": "vendor",
+          "name": "Vendor",
+          "limit": 1
+        },
+        {
+          "type": "title",
+          "name": "Title",
+          "limit": 1
+        },
+        {
+          "type": "price",
+          "name": "Price",
+          "limit": 1
+        },
+        {
+          "type": "variants",
+          "name": "Product variants picker",
+          "limit": 1
+        }, {
+          "type": "quantity",
+          "name": "Quantity",
+          "limit": 1
+        }, {
+          "type": "description",
+          "name": "Description",
+          "limit": 1
+        }, {
+          "type": "add_to_cart",
+          "name": "Add to cart",
+          "limit": 1
+        }
+      ]
+    }
+  {% endschema %}
