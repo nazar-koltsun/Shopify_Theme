@@ -100,7 +100,9 @@
 
     <div>
       {% form 'product'
-        , product %}
+        , product
+        , id: 'product-form'
+        , novalidate: "novalidate" %}
         {% for block in section.blocks %}
           {% case block.type %}
             {% when "vendor" %}
@@ -110,7 +112,7 @@
               <h1 class="text-3xl font-bold mt-4">{{ product.title }}</h1>
 
             {% when "price" %}
-              <div class="flex gap-3 items-center mt-4">
+              <div class="flex gap-3 items-center mt-4" id="price-{{ section.id }}">
                 {% if selected_product.compare_at_price %}
                   <span class="line-through">{{ selected_product.compare_at_price | money }}</span>
                 {% endif %}
@@ -129,7 +131,7 @@
                   name="id"
                   value="{{ selected_product.id }}">
                 {% unless product.has_only_default_variant %}
-                  <div data-url="{{ product.url }}" data-section="{{ section.id }}">
+                  <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
                     {% for option in product.options_with_values %}
                       <p class="mt-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2 text-left" for="option-{{ forloop.index0 }}">{{ option.name }}</label>
@@ -146,8 +148,12 @@
                           {% endfor %}
                         </select>
                       </p>
+
+                      <script type="application/json">
+                        {{ product.variants |  json }}
+                      </script>
                     {% endfor %}
-                  </div>
+                  </variant-selector>
                 {% endunless %}
               </div>
 
@@ -171,7 +177,7 @@
 
             {% when "add_to_cart" %}
               <button
-                class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 disabled:bg-gray-500 disabled:pointer-events-none"
+                class="form-submit-btn bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 disabled:bg-gray-500 disabled:pointer-events-none"
                 type="submit"
                 {% if selected_product.available == false %}
                 disabled
@@ -183,8 +189,8 @@
                 {% endif %}
               </button>
 
-            {% else %}
-          {% endcase %}
+          {% else %}
+            {% endcase %}
 
           {% endfor %}
         {% endform %}
@@ -194,6 +200,83 @@
     </div>
   </div>
 
+
+  <script>
+    class VariantSelector extends HTMLElement {
+      constructor() {
+        super();
+        this.addEventListener("change", this.onVariantChange);
+      }
+
+      onVariantChange() {
+        this.getSelectedOptions();
+        this.getSelectedVariant();
+        this.updateUrl();
+        this.updateFormID();
+        this.updateSubmitBtn();
+        this.updatePrice();
+      }
+
+      getSelectedOptions() {
+        this.options = Array.from(this.querySelectorAll("select"), (select) => select.value);
+      }
+
+      getVariantJSON() {
+        this.variandData = this.variandData 
+        || JSON.parse(this.querySelector('script[type="application/json"]').textContent);
+
+        return this.variandData;
+      }
+
+      getSelectedVariant() {
+        const selectedProductTitle = this.options.join(' / ');
+
+        this.selectedVariant = this.getVariantJSON().find(variant => variant.title === selectedProductTitle);
+
+        return this.selectedVariant;
+      }
+
+      updateUrl() {
+        window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.selectedVariant.id}`);
+      }
+
+      updateFormID() {
+        const formInput = document.querySelector('#product-form input[name="id"]')
+        formInput.value = this.selectedVariant.id;
+      }
+
+      updatePrice() {
+        fetch(`${this.dataset.url}?variant=${this.selectedVariant.id}&section_id=${this.dataset.section}`)
+        .then((response) => response.text())
+        .then((responseText) => {
+            const id = `price-${this.dataset.section}`;
+  
+            const html = new DOMParser().parseFromString(responseText, 'text/html');
+
+            const oldPrice = document.getElementById(id);
+
+            const newPrice = html.getElementById(id);
+
+            if(oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
+        });
+        }
+
+      updateSubmitBtn() {
+        const submitBtn = document.querySelector('.form-submit-btn');
+
+        if(this.selectedVariant.available === false) {
+          submitBtn.setAttribute('disabled', true);
+          submitBtn.textContent = 'Sold out';
+        } else {
+          submitBtn.removeAttribute('disabled');
+          submitBtn.textContent = 'Add to cart';
+        }
+      }
+    }
+
+
+    customElements.define("variant-selector", VariantSelector);
+  </script>
   <!-- Initialize Swiper -->
   <script>
     const interval = setInterval(() => {
