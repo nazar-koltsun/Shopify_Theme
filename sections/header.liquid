@@ -1,6 +1,6 @@
 {% assign menu_link_list = section.settings.menu.links %}
 
-<div class="relative bg-white">
+<div class="relative bg-white" x-data="{ isSearchOpen: false }">
   <div class="mx-auto px-4 sm:px-6">
     <div class="flex justify-center items-center py-6 md:justify-start md:space-x-10">
       <!-- STORE NAME / STORE LOGO -->
@@ -29,8 +29,10 @@
                   <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
 
                     {% for sublink in link.links %}
-                      <a href="{{sublink.url}}" class="m-3 p-3 flex items start rounded-lg hover:bg-gray-100"
-                      style="{% if link.active %}color: black{% endif %}">
+                      <a
+                        href="{{sublink.url}}"
+                        class="m-3 p-3 flex items start rounded-lg hover:bg-gray-100"
+                        style="{% if link.active %}color: black{% endif %}">
                         <div class="ml-4">
                           <p class="text-gray-900 text-base font-medium">
                             {{ sublink.title }}
@@ -43,10 +45,10 @@
               </div>
 
             {% else %}
-              <a href="{{link.url}}" 
-              class="text-base text-gray-500 hover:text-gray-900"
-              style="{% if link.active %}color: black{% endif %}"
-              >{{ link.title }}</a>
+              <a
+                href="{{link.url}}"
+                class="text-base text-gray-500 hover:text-gray-900"
+                style="{% if link.active %}color: black{% endif %}">{{ link.title }}</a>
             {% endif %}
 
           </div>
@@ -54,6 +56,10 @@
       </nav>
 
       <div class="hidden md:flex items-center justify-end md:flex-1 space-x-5">
+        <button class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900" @click='isSearchOpen = true'>
+          {% render 'icon-search' %}
+        </button>
+
         <a href="{{routes.cart_url}}" class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900">
           {% render 'icon-shopping-bag' %}
         </a>
@@ -146,6 +152,18 @@
 
     </div>
   </div>
+
+  <div class="absolute left-0 top-0 w-full flex justify-center p-12 bg-white shadow-lg" x-show="isSearchOpen">
+    <button class="absolute right-4 top-4 w-8 h-8 flex justify-center items-center" @click="isSearchOpen = false">
+      {% render 'icon-close'  %}
+    </button>
+
+    <form action="{{ routes.search_url }}" class="flex gap-4 w-full md:w-96">
+      <input type="search" name="q" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline">
+      <button class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900">{% render 'icon-search' %}</button>
+    </form>
+  </div>
+
 </div>
 
 {% schema %}
@@ -157,8 +175,7 @@
         "id": "menu_title",
         "label": "Menu title",
         "default": "Menu"
-      },
-      {
+      }, {
         "type": "link_list",
         "id": "menu",
         "label": "memu",
