@@ -1,0 +1,40 @@
+<div class="max-w-6xl mx-auto mt-8 py-4 px-4">
+  <h1 class="text-3xl font-bold text-center">Search results</h1>
+
+  {% paginate search.results by 10 %}
+    <form action="{{ routes.search_url }}" class="flex gap-4 w-full md:w-96 mx-auto mt-8">
+      <input
+        type="search"
+        name="q"
+        value="{{ search.terms }}"
+        class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline">
+      <button class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900">{% render 'icon-search' %}</button>
+    </form>
+
+    <p class="text-center mt-4 text-gray-500">{{ search.results_count }} results for the search term {{ search.terms }}</p>
+
+    {% if search.performed %}
+      {% if search.results_count > 0 %}
+        <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mt-8">
+          {% for item in search.results %}
+            {% case item.object_type  %}
+              {% when 'product' %}
+                {% render 'product-card', product: item %}
+              {% else %}
+                
+            {% endcase %}
+          {% endfor %}
+        </div>
+
+        {% else %}
+          <p class="mt-8 text-center text-xl text-red-700">No one item found, please try to change your search terms.</p>
+      {% endif %}
+
+    {% endif %}
+
+    {% if paginate.pages > 1 %}
+      {% render 'pagination', pagination: paginate %}
+    {% endif %}
+  {% endpaginate %}
+
+</div>
