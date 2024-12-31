@@ -1,3 +1,9 @@
+<style>
+  [x-cloak] {
+    display: none;
+  }
+</style>
+
 {% assign menu_link_list = section.settings.menu.links %}
 
 <div class="relative bg-white" x-data="{ isSearchOpen: false }">
@@ -153,7 +159,7 @@
     </div>
   </div>
 
-  <div class="absolute left-0 top-0 w-full flex justify-center p-12 bg-white shadow-lg" x-show="isSearchOpen">
+  <div class="absolute left-0 top-0 w-full flex justify-center p-12 bg-white shadow-lg" x-show="isSearchOpen" x-cloak>
     <button class="absolute right-4 top-4 w-8 h-8 flex justify-center items-center" @click="isSearchOpen = false">
       {% render 'icon-close'  %}
     </button>
