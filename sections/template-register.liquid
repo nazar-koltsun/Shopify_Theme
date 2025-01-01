@@ -1,0 +1,68 @@
+<div class="max-w-6xl mx-auto mt-8 py-4 px-4">
+
+  <div x-show="showLogin" class="mt-8 w-full md:w-96 mx-auto">
+    <h2 class="text-3xl font-bold text-center">Register an account</h2>
+    {% form 'create_customer' %}
+      <div class="mt-8 space-y-3">
+
+        {% if form.errors %}
+          <div class="text-red-700">
+            Error: {{ form.errors | default_errors }}
+          </div>          
+        {% endif %}
+  
+        <div>
+          <label for="first_name" class="sr-only">First Name</label>
+          <input
+            id="first_name"
+            type="text"
+            name="customer[first_name]"
+            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+            placeholder="First Name">
+        </div>
+  
+        <div>
+          <label for="last_name" class="sr-only">Last Name</label>
+          <input
+            id="last_name"
+            type="text"
+            name="customer[last_name]"
+            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+            placeholder="Last Name">
+        </div>
+  
+        <div>
+          <label for="bird_date" class="sr-only">Bird date</label>
+          <input
+            id="bird_date"
+            type="date"
+            name="customer[note][bird_date]"
+            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+            placeholder="Bird date">
+        </div>
+
+        <div>
+          <label for="email" class="sr-only">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            name="customer[email]"
+            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+            placeholder="Email">
+        </div>
+
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="customer[password]"
+            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+            placeholder="Password">
+        </div>     
+
+        <button class="w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">Create account</button>
+      </div>
+    {% endform %}
+  </div>
+</div>
