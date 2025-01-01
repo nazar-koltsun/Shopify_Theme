@@ -4,9 +4,9 @@
   }
 </style>
 
-<div class="max-w-6xl mx-auto mt-8 py-4 px-4" x-data="{showLogin: true, showRecoverPass: false}">
+<div id="password-recovery-container" class="max-w-6xl mx-auto mt-8 py-4 px-4" x-data="{showLogin: true, showRecoverPass: false, showSuccessMessage: false}">
 
-  <div x-show="showLogin" class="mt-8 w-full md:w-96 mx-auto">
+  <div x-cloak x-show="showLogin && !showSuccessMessage" class="mt-8 w-full md:w-96 mx-auto">
     <h2 class="text-3xl font-bold text-center">Sign in to your store</h2>
     {% form 'customer_login' %}
       <div class="mt-8 space-y-3">
@@ -57,18 +57,37 @@
             Error: {{ form.errors | default_errors }}
           </div>          
         {% endif %}
-  
-        <div>
+
+        {% if form.posted_successfully? %}
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              const container = document.getElementById('password-recovery-container');
+              if (container) {
+                const alpineComponent = Alpine.$data(container);
+                alpineComponent.showSuccessMessage = true;
+                alpineComponent.showRecoverPass = true;
+              }
+            });
+          </script>
+        {% endif %}
+
+        
+        <div x-show="showSuccessMessage">
+          <p>Please check your email to recover your password. A recovery link has been sent to the email address provided.</p>
+        </div>
+
+        <div x-show="!showSuccessMessage">
           <label for="email" class="sr-only">Email Address</label>
           <input
             id="email"
             type="email"
-            name="customer[email]"
+            name="email"
+            autocomplete="email"
             class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
             placeholder="Email Address">
         </div>
-        <button class="w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">Recover password</button>
-        <a @click="showLogin = true, showRecoverPass = false" class="underline text-gray-500 text-xs cursor-pointer">Go to login?</a>
+        <button x-show="!showSuccessMessage" class="w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">Recover password</button>
+        <a x-show="!showSuccessMessage" @click="showLogin = true, showRecoverPass = false" class="underline text-gray-500 text-xs cursor-pointer">Go to login?</a>
       </div>
     {% endform %}
   </div>
