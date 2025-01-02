@@ -4,9 +4,15 @@
   }
 </style>
 
-<div id="password-recovery-container" class="max-w-6xl mx-auto mt-8 py-4 px-4" x-data="{showLogin: true, showRecoverPass: false, showSuccessMessage: false}">
+<div
+  id="password-recovery-container"
+  class="max-w-6xl mx-auto mt-8 py-4 px-4"
+  x-data="{showLogin: true, showRecoverPass: false, showSuccessMessage: false}">
 
-  <div x-cloak x-show="showLogin && !showSuccessMessage" class="mt-8 w-full md:w-96 mx-auto">
+  <div
+    x-cloak
+    x-show="showLogin && !showSuccessMessage"
+    class="mt-8 w-full md:w-96 mx-auto">
     <h2 class="text-3xl font-bold text-center">Sign in to your store</h2>
     {% form 'customer_login' %}
       <div class="mt-8 space-y-3">
@@ -14,9 +20,9 @@
         {% if form.errors %}
           <div class="text-red-700">
             Error: {{ form.errors | default_errors }}
-          </div>          
+          </div>
         {% endif %}
-  
+
         <div>
           <label for="email" class="sr-only">Email Address</label>
           <input
@@ -26,7 +32,7 @@
             class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
             placeholder="Email Address">
         </div>
-  
+
         {% if form.password_needed %}
           <div>
             <label for="password" class="sr-only">Password</label>
@@ -46,7 +52,23 @@
     {% endform %}
   </div>
 
-  <div x-cloak x-show="showRecoverPass" class="mt-8 w-full md:w-96 mx-auto">
+  {% if shop.checkout.guest_login %}
+    <div
+      class="mt-8 w-full md:w-96 mx-auto">
+      <hr class="my-12">
+
+      <h2 class="text-3xl font-bold text-center">Login as a guest?</h2>
+      {% form 'guest_login' %}
+        <button class="mt-4 w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">Continue</button>
+      {% endform %}
+    </div>
+  {% endif %} 
+
+
+  <div
+    x-cloak
+    x-show="showRecoverPass"
+    class="mt-8 w-full md:w-96 mx-auto">
     <h2 class="text-3xl font-bold text-center">Recover your password</h2>
 
     {% form 'recover_customer_password' %}
@@ -55,7 +77,7 @@
         {% if form.errors %}
           <div class="text-red-700">
             Error: {{ form.errors | default_errors }}
-          </div>          
+          </div>
         {% endif %}
 
         {% if form.posted_successfully? %}
@@ -71,7 +93,7 @@
           </script>
         {% endif %}
 
-        
+
         <div x-show="showSuccessMessage">
           <p>Please check your email to recover your password. A recovery link has been sent to the email address provided.</p>
         </div>
@@ -87,7 +109,10 @@
             placeholder="Email Address">
         </div>
         <button x-show="!showSuccessMessage" class="w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">Recover password</button>
-        <a x-show="!showSuccessMessage" @click="showLogin = true, showRecoverPass = false" class="underline text-gray-500 text-xs cursor-pointer">Go to login?</a>
+        <a
+          x-show="!showSuccessMessage"
+          @click="showLogin = true, showRecoverPass = false"
+          class="underline text-gray-500 text-xs cursor-pointer">Go to login?</a>
       </div>
     {% endform %}
   </div>
