@@ -773,6 +773,10 @@ video {
   aspect-ratio: 16/9;
 }
 
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
 .size-4 {
   width: 1rem;
   height: 1rem;
@@ -831,6 +835,10 @@ video {
   height: 100vh;
 }
 
+.h-52 {
+  height: 13rem;
+}
+
 .min-h-12 {
   min-height: 3rem;
 }
@@ -857,6 +865,14 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-52 {
+  width: 13rem;
+}
+
+.w-auto {
+  width: auto;
 }
 
 .min-w-\[200px\] {
@@ -1160,6 +1176,14 @@ video {
 
 .p-5 {
   padding: 1.25rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+.p-1 {
+  padding: 0.25rem;
 }
 
 .px-2 {
@@ -1501,6 +1525,10 @@ video {
     display: flex;
   }
 
+  .md\:grid {
+    display: grid;
+  }
+
   .md\:hidden {
     display: none;
   }
@@ -1541,6 +1569,18 @@ video {
     grid-template-columns: 3fr 1fr;
   }
 
+  .md\:grid-cols-\[200px_1fr_200px\] {
+    grid-template-columns: 200px 1fr 200px;
+  }
+
+  .md\:grid-cols-\[208px_1fr_200px\] {
+    grid-template-columns: 208px 1fr 200px;
+  }
+
+  .md\:grid-cols-\[208px_1fr_208px\] {
+    grid-template-columns: 208px 1fr 208px;
+  }
+
   .md\:justify-start {
     justify-content: flex-start;
   }
@@ -1549,10 +1589,18 @@ video {
     gap: 2rem;
   }
 
+  .md\:gap-4 {
+    gap: 1rem;
+  }
+
   .md\:space-x-10 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0;
     margin-right: calc(2.5rem * var(--tw-space-x-reverse));
     margin-left: calc(2.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  .md\:p-8 {
+    padding: 2rem;
   }
 }
 
