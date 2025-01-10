@@ -14,12 +14,13 @@
                 <div>
                   {% if order_image %}
                     <img
+                      class="w-[300px] h-[200px] object-cover"
                       src="{{ order_image | img_url: "medium" }}"
                       width="300"
                       height="200"
                       alt="{{ order_image.alt | escape }}">
                   {% else %}
-                    {{ 'product-1' | placeholder_svg_tag: 'w-[300px] h-[200px]' }}
+                    {{ 'product-1' | placeholder_svg_tag: 'w-[300px] h-[200px] object-cover' }}
                   {% endif %}
                 </div>
 

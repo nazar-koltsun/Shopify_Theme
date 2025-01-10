@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto mt-8 py-4 px-4">
+<div class="max-w-6xl mx-auto mt-8 py-4 px-4 space-y-4">
   <h1 class="text-3xl font-bold">Order {{ order.name }}</h1>
 
   <p class="mt-4 text-gray-500">Placed on {{ order.created_at | date: format: 'date' }}</p>
@@ -81,35 +81,52 @@
 
     {% endfor %}
   </div>
-</div>
 
-{% comment %} <h2>Billing Address</h2>
-      <p><span>Payment Status:</span> <span class="status_{{ order.financial_status }}">{{ order.financial_status }}</span></p>
-      <p>{{ order.billing_address.name }}</p>
-      <p>{{ order.billing_address.company }}</p>
-      <p>{{ order.billing_address.street }}</p>
-      <p>{{ order.billing_address.city }}, {{ order.billing_address.province }}</p>
-      <p>{{ order.billing_address.country }} {{ order.billing_address.zip }}</p>
-      <p>{{ order.billing_address.phone }}</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:md:grid-cols-3 p-4 md:p-8 border bg-gray-100 gap-5">
+    <div>
+      <h2 class="font-semibold">Billing address</h2>
+      <p class="mt-4">{{ order.billing_address | format_address }}</p>
+    </div>
+    <div>
+      <h2 class="font-semibold">Payment information</h2>
 
-      <h2>Shipping Address</h2>
-      <p><span>Fulfillment Status:</span><span class="status_{{ order.fulfillment_status }}">{{ order.fulfillment_status }}</span></p>
-      <p>{{ order.shipping_address.name }}</p>
-      <p>{{ order.shipping_address.company }}</p>
-      <p>{{ order.shipping_address.street }}</p>
-      <p>{{ order.shipping_address.city }}, {{ order.shipping_address.province }}</p>
-      <p>{{ order.shipping_address.country }} {{ order.shipping_address.zip }}</p>
-      <p>{{ order.shipping_address.phone }}</p>
+        {% for payment in order.transactions %}
+          {% assign credit_card_company = payment.payment_details.credit_card_company %}
+          {% assign credit_card_last_four_digits = payment.payment_details.credit_card_number %}
 
-      <h2>Order Items</h2>
-      <table>
-        {% for line_item in order.line_items %}
-        <tr>
-          <td>{{ line_item.title | link_to: line_item.product.url }}</td>
-          <td>{{ line_item.sku }}</td>
-          <td>{{ line_item.original_price | money }}</td>
-          <td>{{ line_item.quantity }}</td>
-          <td>{{ line_item.line_price | money }}</td>
-        </tr>
+          {% assign payment_status = payment.status_label %}
+          {% assign payment_status_bg = 'green' %}
+
+          {% if payment_status == 'Failure' %}
+            {% assign payment_status_bg = 'red' %}
+          {% endif %}
+
+          {% if credit_card_company %}
+            <p class="mt-4">{{ credit_card_company }}</p>
+            <p>{{ credit_card_last_four_digits }}</p>
+            <span class="bg-{{ payment_status_bg }}-600 py-1 px-2 text-white rounded-lg text-xs">{{ payment_status }}</span>
+
+            {% else %}
+              <p class="text-sm mt-4">This order is manually placed {{ shop.name }}</p>
+          {% endif %}
         {% endfor %}
-</table> {% endcomment %}
+
+    </div>
+    <div>
+      <table class="w-full">
+        <tr>
+          <td class="p-2 border">Subtotal</td>
+          <td class="p-2 border">{{ order.subtotal_price | money }}</td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Shipping</td>
+          <td class="p-2 border">{{ order.shipping_price | money }}</td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Total</td>
+          <td class="p-2 border">{{ order.total_price | money }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
