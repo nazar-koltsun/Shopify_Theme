@@ -1,7 +1,14 @@
-<div class="max-w-6xl mx-auto mt-8 py-4 px-4">
+<style>
+  [x-cloak] {
+    display: none;
+  }
+</style>
+
+<div class="max-w-6xl mx-auto mt-8 py-4 px-4" x-data="{ showAddAddress: false }">
   <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-5">
     <h1 class="text-center md:text-left text-3xl font-bold">Addresses</h1>
-    <button class="justify-self-center bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">Create new address</button>
+    <button @click="showAddAddress=true" class="justify-self-center bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+      Create new address</button>
     <a href="{{ routes.account_url }}" class="text-center md:text-right text-blue-600 hover:underline">Back to account</a>
   </div>
 
@@ -25,47 +32,183 @@
     </div>
 
     <div class="mt-8">
-      {% render "pagination"s
+      {% render "pagination" s 
         , pagination: paginate %}
     </div>
   {% endpaginate %}
+
+  <div
+    x-cloak
+    x-show="showAddAddress"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50">
+    <div class="absolute md:top-[10vh] md:left-1/2 md:-translate-x-1/2 h-full m-auto w-full md:max-h-[85vh] md:h-min md:w-[600px] bg-white py-10 pb-5 px-4 overflow-y-auto">
+
+      <button @click="showAddAddress=false" class="absolute right-2 top-2 flex items-center justify-center w-8 h-8">
+        {% render 'icon-close' %}
+      </button>
+
+      <h2 class="text-2xl font-bold text-center">Add new address</h2>
+
+      <div class="mt-6">
+        {% form 'customer_address'
+          , customer.new_address %}
+
+          {% if form.errors %}
+            <div class="text-red-700">
+              Error: {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          <div>
+            <label class="font-medium" for="first_name_{{ form.id }}">First Name</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="first_name_{{ form.id }}"
+              type="text"
+              value="{{ form.first_name }}"
+              name="address[first_name]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="last_name_{{ form.id }}">Last Name</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="last_name_{{ form.id }}"
+              type="text"
+              value="{{ form.last_name }}"
+              name="address[last_name]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="company_{{ form.id }}">Company</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="company_{{ form.id }}"
+              type="text"
+              value="{{ form.company }}"
+              name="address[company]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[address1]_{{ form.id }}">Address 1</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="address[address1]_{{ form.id }}"
+              type="text"
+              value="{{ form.address1 }}"
+              name="address[address1]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[address2]_{{ form.id }}">Address 2</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="address[address2]_{{ form.id }}"
+              type="text"
+              value="{{ form.address2 }}"
+              name="address[address2]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[city]_{{ form.id }}">City</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="address[city]_{{ form.id }}"
+              type="text"
+              value="{{ form.city }}"
+              name="address[city]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[country]_{{ form.id }}">Country</label>
+
+            <select id="address[country]_{{ form.id }}" name="address[country]" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline">
+              {{ country_option_tags }}
+            </select>
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[province]_{{ form.id }}">Province</label>
+
+            <select id="address[province]_{{ form.id }}" name="address[province]" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline">
+              
+            </select>
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[zip]_{{ form.id }}">Zip/Post Code</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="address[zip]_{{ form.id }}"
+              type="text"
+              value="{{ form.zip }}"
+              name="address[zip]"
+              size="30" />
+          </div>
+
+          <div class="mt-4">
+            <label class="font-medium" for="address[phone]_{{ form.id }}">Phone Number</label>
+            <input
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              id="address[phone]_{{ form.id }}"
+              type="tel"
+              value="{{ form.phone }}"
+              name="address[phone]"
+              size="30" />
+          </div>
+
+          <div class="mt-6 flex justify-end gap-4">
+            <button type="reset" class="h-[36px] bg-white border border-gray-400 hover:border-gray-800 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Reset</button>
+            <button type="submit" class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Submit</button>
+          </div>
+
+        {% endform %}
+      </div>
+    </div>
+  </div>
 </div>
 
 
 {% comment %} <h2>New Address</h2>
-    {% form 'customer_address', customer.new_address %}
+                {% form 'customer_address', customer.new_address %}
 
-    {{ form.errors | default_errors }}
+                {{ form.errors | default_errors }}
 
-    <label for="first_name">First Name</label>
-    <input type="text" value="" name="address[first_name]" size="30" />
+                <label for="first_name">First Name</label>
+                <input type="text" value="" name="address[first_name]" size="30" />
 
-    <label for="last_name">Last Name</label>
-    <input type="text" value="" name="address[last_name]" size="30" />
+                <label for="last_name">Last Name</label>
+                <input type="text" value="" name="address[last_name]" size="30" />
 
-    <label for="company">Company</label>
-    <input type="text" value="" name="address[company]" />
+                <label for="company">Company</label>
+                <input type="text" value="" name="address[company]" />
 
-    <label for="address1">Address 1</label>
-    <input type="text" value="" name="address[address1]" />
+                <label for="address1">Address 1</label>
+                <input type="text" value="" name="address[address1]" />
 
-    <label for="address2">Address 2</label>
-    <input type="text" value="" name="address[address2]" />
+                <label for="address2">Address 2</label>
+                <input type="text" value="" name="address[address2]" />
 
-    <label for="city">City</label>
-    <input type="text" value="" name="address[city]" />
+                <label for="city">City</label>
+                <input type="text" value="" name="address[city]" />
 
-    <!-- See docs for @shopify/theme-addresses to support Country and Province -->
-    <label for="country">Country</label>
-    <select name="address[country]" /></select>
+                <!-- See docs for @shopify/theme-addresses to support Country and Province -->
+                <label for="country">Country</label>
+                <select name="address[country]" /></select>
 
-    <label for="province">Province</label>
-    <select name="address[province]" /></select>
+                <label for="province">Province</label>
+                <select name="address[province]" /></select>
 
-    <label for="zip">Zip/Post Code</label>
-    <input type="text" value="" name="address[zip]" />
+                <label for="zip">Zip/Post Code</label>
+                <input type="text" value="" name="address[zip]" />
 
-    <label for="phone">Phone Number</label>
-    <input type="tel" value="" name="address[phone]" />
+                <label for="phone">Phone Number</label>
+                <input type="tel" value="" name="address[phone]" />
 
 {% endform %} {% endcomment %}
