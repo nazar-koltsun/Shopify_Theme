@@ -12,7 +12,7 @@
     <a href="{{ routes.account_url }}" class="text-center md:text-right text-blue-600 hover:underline">Back to account</a>
   </div>
 
-  {% paginate customer.addresses by 2 %}
+  {% paginate customer.addresses by 4 %}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mt-10">
       {% for address in customer.addresses %}
         <div class="flex flex-col border border-gray-300 p-2">
@@ -128,7 +128,12 @@
           <div class="mt-4">
             <label class="font-medium" for="address[country]_{{ form.id }}">Country</label>
 
-            <select id="address[country]_{{ form.id }}" name="address[country]" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline">
+            <select
+              id="address[country]_{{ form.id }}"
+              name="address[country]"
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+              data-country-selector
+              data-id="{{ form.id }}">
               {{ country_option_tags }}
             </select>
           </div>
@@ -136,9 +141,10 @@
           <div class="mt-4">
             <label class="font-medium" for="address[province]_{{ form.id }}">Province</label>
 
-            <select id="address[province]_{{ form.id }}" name="address[province]" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline">
-              
-            </select>
+            <select
+              id="address[province]_{{ form.id }}"
+              name="address[province]"
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"></select>
           </div>
 
           <div class="mt-4">
@@ -174,41 +180,101 @@
   </div>
 </div>
 
+<script>
+  class CustomerAddress {
+    constructor() {
+      this.initCustomerAddress();
+      this.reinitOnChange();
+    }
 
-{% comment %} <h2>New Address</h2>
-                {% form 'customer_address', customer.new_address %}
+    initCustomerAddress() {
+      const allAddressesSelector = document.querySelectorAll('select[data-country-selector]');
+        
+      if (allAddressesSelector.length < 1) return;
 
-                {{ form.errors | default_errors }}
+      allAddressesSelector.forEach(select => {
+        const selectedCountry = this.getSelectedCountry(select);
 
-                <label for="first_name">First Name</label>
-                <input type="text" value="" name="address[first_name]" size="30" />
+        if (!selectedCountry) return;
 
-                <label for="last_name">Last Name</label>
-                <input type="text" value="" name="address[last_name]" size="30" />
+        const provinces = selectedCountry.dataset.provinces;
 
-                <label for="company">Company</label>
-                <input type="text" value="" name="address[company]" />
+        const arrayOfProvinces = JSON.parse(provinces);
 
-                <label for="address1">Address 1</label>
-                <input type="text" value="" name="address[address1]" />
+        const provinceSelector = document.querySelector(`#address\\[province\\]_${select.dataset.id}`);
 
-                <label for="address2">Address 2</label>
-                <input type="text" value="" name="address[address2]" />
+        if(arrayOfProvinces.length < 1) {
+          provinceSelector.disabled = true;
+        } else {
+          provinceSelector.disabled = false;
+        }
 
-                <label for="city">City</label>
-                <input type="text" value="" name="address[city]" />
+        provinceSelector.innerHTML = '';
 
-                <!-- See docs for @shopify/theme-addresses to support Country and Province -->
-                <label for="country">Country</label>
-                <select name="address[country]" /></select>
+        for (let i = 0; i < arrayOfProvinces.length; i++) {
+          if(arrayOfProvinces[i][0] === provinceSelector.value) {
+            const optionElement = document.createElement('option');
+            optionElement.value = arrayOfProvinces[i][0]; 
+            optionElement.textContent = arrayOfProvinces[i][1];
+            optionElement.selected = true;
+  
+          } else {
+            optionElement.selected = false;
+          }
 
-                <label for="province">Province</label>
-                <select name="address[province]" /></select>
+          provinceSelector.appendChild(optionElement);
+        }
+      })
+    }
 
-                <label for="zip">Zip/Post Code</label>
-                <input type="text" value="" name="address[zip]" />
+    getSelectedCountry(select) {
+      let option;
+      let selectedOption;
+      
+      for(let i  = 0; i < select.options.length; i++) {
+        option = select.options[i];
+        
+        if(select.value === option.value) {
+          selectedOption = option;
+          selectedOption.selected = true;
+          break;
+        }
+      }
 
-                <label for="phone">Phone Number</label>
-                <input type="tel" value="" name="address[phone]" />
+      return selectedOption;
+    }
 
-{% endform %} {% endcomment %}
+    reinitOnChange() {
+      const allAddressesSelector = document.querySelectorAll('select[data-country-selector]');
+
+      if (allAddressesSelector.length < 1) return;
+
+      allAddressesSelector.forEach(select => {
+        select.addEventListener('change', function() {
+        const provinces = this.options[this.selectedIndex].dataset.provinces;
+
+        const arrayOfProvinces = JSON.parse(provinces);
+
+        const provinceSelector = document.querySelector(`#address\\[province\\]_${select.dataset.id}`);
+
+        if(arrayOfProvinces.length < 1) {
+          provinceSelector.disabled = true;
+        } else {
+          provinceSelector.disabled = false;
+        }
+
+        provinceSelector.innerHTML = '';
+
+        for (let i = 0; i < arrayOfProvinces.length; i++) {
+          const optionElement = document.createElement('option');
+            optionElement.value = arrayOfProvinces[i][0]; 
+            optionElement.textContent = arrayOfProvinces[i][1];
+            provinceSelector.appendChild(optionElement);
+        }
+        })
+      })
+    }
+  }
+
+  const cutomerAddress = new CustomerAddress();
+</script>
