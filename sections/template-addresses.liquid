@@ -4,7 +4,7 @@
   }
 </style>
 
-<div class="max-w-6xl mx-auto mt-8 py-4 px-4" x-data="{ showAddAddress: false }">
+<div class="max-w-6xl mx-auto mt-8 py-4 px-4" x-data="{ showAddAddress: false, showEditAddress: false, currentAddressId: null }">
   <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-5">
     <h1 class="text-center md:text-left text-3xl font-bold">Addresses</h1>
     <button @click="showAddAddress=true" class="justify-self-center bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -14,8 +14,9 @@
 
   {% paginate customer.addresses by 4 %}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mt-10">
+
       {% for address in customer.addresses %}
-        <div class="flex flex-col border border-gray-300 p-2">
+        <div class="flex flex-col border border-gray-300 p-2" x-data="{ showDeleteModal: false }">
           {% if address == customer.default_address %}
             <span class="block bg-green-600 px-3 py-1 text-center text-sm text-white mb-4">Default</span>
           {% endif %}
@@ -24,9 +25,43 @@
           </div>
 
           <div class="grid grid-cols-2 gap-2 mt-auto">
-            <button class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Edit</button>
-            <button class="h-[36px] bg-white border border-gray-400 hover:border-gray-800 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Delete</button>
+            <button @click="showEditAddress=true; currentAddressId='{{ address.id }}'" class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Edit</button>
+            <button @click="showDeleteModal=true" class="w-full h-[36px] bg-white border border-gray-400 hover:border-gray-800 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">
+              Delete
+            </button>
           </div>
+
+          <div
+            x-cloak
+            x-show="showDeleteModal"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50">
+            <div @click.outside="showDeleteModal=false" class="absolute md:top-[10vh] md:left-1/2 md:-translate-x-1/2 h-full m-auto w-full md:max-h-[85vh] md:h-min md:w-[600px] bg-white py-10 pb-5 px-4 overflow-y-auto">
+
+              <button @click="showDeleteModal=false" class="absolute right-2 top-2 flex items-center justify-center w-8 h-8">
+                {% render 'icon-close' %}
+              </button>
+
+              <h2 class="text-2xl font-bold">Delete the address!</h2>
+
+              <p class="mt-4">Are you sure that you want to delete the existion address?</p>
+
+              <form method="post" action="/account/addresses/{{ address.id }}" class="mt-2">
+                <input
+                  type="hidden"
+                  name="_method"
+                  value="delete">
+
+                <div class="grid grid-cols-2 gap-2 mt-auto">
+                  <button type="button" @click="showDeleteModal=false" class="w-full h-[36px] bg-white border border-gray-400 hover:border-gray-800 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">
+                    Cancel
+                  </button>
+  
+                  <button class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Delete</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
         </div>
       {% endfor %}
     </div>
@@ -133,7 +168,9 @@
               name="address[country]"
               class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
               data-country-selector
-              data-id="{{ form.id }}">
+              data-id="{{ form.id }}"
+              data-value="{{ form.country }}">
+
               {{ country_option_tags }}
             </select>
           </div>
@@ -144,6 +181,7 @@
             <select
               id="address[province]_{{ form.id }}"
               name="address[province]"
+              data-value="{{ form.province }}"
               class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"></select>
           </div>
 
@@ -169,6 +207,13 @@
               size="30" />
           </div>
 
+          <div class="mt-4">
+            {{ form.set_as_default_checkbox }}
+            <label for="address_default_{{ form.id }}">
+              Set as default address
+            </label>
+          </div>
+
           <div class="mt-6 flex justify-end gap-4">
             <button type="reset" class="h-[36px] bg-white border border-gray-400 hover:border-gray-800 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Reset</button>
             <button type="submit" class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Submit</button>
@@ -178,6 +223,167 @@
       </div>
     </div>
   </div>
+
+  {% for address in customer.addresses %}
+    <div
+      x-cloak
+      x-show="showEditAddress && currentAddressId == '{{ address.id }}'"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50">
+      <div class="absolute md:top-[10vh] md:left-1/2 md:-translate-x-1/2 h-full m-auto w-full md:max-h-[85vh] md:h-min md:w-[600px] bg-white py-10 pb-5 px-4 overflow-y-auto">
+
+        <button @click="showEditAddress=false" class="absolute right-2 top-2 flex items-center justify-center w-8 h-8">
+          {% render 'icon-close' %}
+        </button>
+
+        <h2 class="text-2xl font-bold text-center">Edit address</h2>
+
+        <div class="mt-6">
+          {% form 'customer_address'
+            , address
+            , id: 'EditAddress_{{ address.id }}' %}
+
+            {% if form.errors %}
+              <div class="text-red-700">
+                Error: {{ form.errors | default_errors }}
+              </div>
+            {% endif %}
+
+            <div>
+              <label class="font-medium" for="first_name_{{ form.id }}">First Name</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="first_name_{{ form.id }}"
+                type="text"
+                value="{{ form.first_name }}"
+                name="address[first_name]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="last_name_{{ form.id }}">Last Name</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="last_name_{{ form.id }}"
+                type="text"
+                value="{{ form.last_name }}"
+                name="address[last_name]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="company_{{ form.id }}">Company</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="company_{{ form.id }}"
+                type="text"
+                value="{{ form.company }}"
+                name="address[company]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[address1]_{{ form.id }}">Address 1</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="address[address1]_{{ form.id }}"
+                type="text"
+                value="{{ form.address1 }}"
+                name="address[address1]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[address2]_{{ form.id }}">Address 2</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="address[address2]_{{ form.id }}"
+                type="text"
+                value="{{ form.address2 }}"
+                name="address[address2]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[city]_{{ form.id }}">City</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="address[city]_{{ form.id }}"
+                type="text"
+                value="{{ form.city }}"
+                name="address[city]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[country]_{{ form.id }}">Country</label>
+
+              <select
+                id="address[country]_{{ form.id }}"
+                name="address[country]"
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                data-country-selector
+                data-id="{{ form.id }}"
+                data-value="{{ form.country }}">
+                {{ country_option_tags }}
+              </select>
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[province]_{{ form.id }}">Province</label>
+
+              <select
+                id="address[province]_{{ form.id }}"
+                name="address[province]"
+                data-value="{{ form.province }}"
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"></select>
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[zip]_{{ form.id }}">Zip/Post Code</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="address[zip]_{{ form.id }}"
+                type="text"
+                value="{{ form.zip }}"
+                name="address[zip]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <label class="font-medium" for="address[phone]_{{ form.id }}">Phone Number</label>
+              <input
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                id="address[phone]_{{ form.id }}"
+                type="tel"
+                value="{{ form.phone }}"
+                name="address[phone]"
+                size="30" />
+            </div>
+
+            <div class="mt-4">
+              <input
+                type="checkbox"
+                id="default_address_{{ address.id }}"
+                name="address[default]"
+                value="1"
+                {% if address == customer.default_address %}
+                checked{% endif %} />
+              <label for="default_address_{{ address.id }}">Set as default address</label>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-4">
+              <button
+                type="button"
+                @click="showEditAddress=false"
+                class="h-[36px] bg-white border border-gray-400 hover:border-gray-800 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Cancel</button>
+              <button type="submit" class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">Update Address</button>
+            </div>
+
+          {% endform %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
 </div>
 
 <script>
@@ -193,6 +399,7 @@
       if (allAddressesSelector.length < 1) return;
 
       allAddressesSelector.forEach(select => {
+        console.log(select);
         const selectedCountry = this.getSelectedCountry(select);
 
         if (!selectedCountry) return;
@@ -212,16 +419,14 @@
         provinceSelector.innerHTML = '';
 
         for (let i = 0; i < arrayOfProvinces.length; i++) {
-          if(arrayOfProvinces[i][0] === provinceSelector.value) {
-            const optionElement = document.createElement('option');
-            optionElement.value = arrayOfProvinces[i][0]; 
-            optionElement.textContent = arrayOfProvinces[i][1];
+          const optionElement = document.createElement('option');
+          optionElement.value = arrayOfProvinces[i][0]; 
+          optionElement.textContent = arrayOfProvinces[i][1];
+          
+          if(arrayOfProvinces[i][0] === provinceSelector.getAttribute('data-value')) {
             optionElement.selected = true;
-  
-          } else {
-            optionElement.selected = false;
           }
-
+          
           provinceSelector.appendChild(optionElement);
         }
       })
@@ -234,7 +439,7 @@
       for(let i  = 0; i < select.options.length; i++) {
         option = select.options[i];
         
-        if(select.value === option.value) {
+        if(option.value === select.getAttribute('data-value')) {
           selectedOption = option;
           selectedOption.selected = true;
           break;
@@ -251,28 +456,32 @@
 
       allAddressesSelector.forEach(select => {
         select.addEventListener('change', function() {
-        const provinces = this.options[this.selectedIndex].dataset.provinces;
+          const provinces = this.options[this.selectedIndex].dataset.provinces;
+          const arrayOfProvinces = JSON.parse(provinces);
+          const provinceSelector = document.querySelector(`#address\\[province\\]_${this.dataset.id}`);
+          const currentProvince = provinceSelector.getAttribute('data-value');
 
-        const arrayOfProvinces = JSON.parse(provinces);
+          if(arrayOfProvinces.length < 1) {
+            provinceSelector.disabled = true;
+          } else {
+            provinceSelector.disabled = false;
+          }
 
-        const provinceSelector = document.querySelector(`#address\\[province\\]_${select.dataset.id}`);
+          provinceSelector.innerHTML = '';
 
-        if(arrayOfProvinces.length < 1) {
-          provinceSelector.disabled = true;
-        } else {
-          provinceSelector.disabled = false;
-        }
-
-        provinceSelector.innerHTML = '';
-
-        for (let i = 0; i < arrayOfProvinces.length; i++) {
-          const optionElement = document.createElement('option');
+          for (let i = 0; i < arrayOfProvinces.length; i++) {
+            const optionElement = document.createElement('option');
             optionElement.value = arrayOfProvinces[i][0]; 
             optionElement.textContent = arrayOfProvinces[i][1];
+            
+            if(arrayOfProvinces[i][0] === currentProvince) {
+              optionElement.selected = true;
+            }
+            
             provinceSelector.appendChild(optionElement);
-        }
-        })
-      })
+          }
+        });
+      });
     }
   }
 
