@@ -1,20 +1,35 @@
 <!-- /templates/customers/activate_account.liquid -->
-{% form 'activate_customer_password' %}
-  {{ form.errors | default_errors }}
-  <div class="password">
-    <label for="password">Password  text</label>
-    <input type="password" name="customer[password]" />
-  </div>
-  <div class="password_confirm">
-    <label for="password_confirmation">Password Confirmation</label>
-    <input type="password" name="customer[password_confirmation]" />
-  </div>
-  <div class="action_bottom">
-    <input type="submit" value="Activate Account" />
-    <span>or</span>
-    <input
-      type="submit"
-      name="decline"
-      value="Decline Invitation" />
-  </div>
-{% endform %}
+
+<div class="mx-auto mt-16 max-w-xl px-4 py-8 bg-white rounded shadow-md">
+  <h1 class="font-bold text-2xl">Activate Account!</h1>
+
+  {% form 'activate_customer_password' %}
+    {{ form.errors | default_errors }}
+    <div class="password mt-4">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        name="customer[password]"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+    </div>
+    <div class="password_confirm mt-2">
+      <label for="password_confirmation">Password Confirmation</label>
+      <input
+        type="password"
+        name="customer[password_confirmation]"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+    </div>
+
+    <div class="action_bottom mt-4">
+      <input
+        type="submit"
+        value="Activate Account"
+        class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4" />
+      <span>or</span>
+      <input
+        type="submit"
+        name="decline"
+        value="Decline Invitation" />
+    </div>
+  {% endform %}
+</div>
