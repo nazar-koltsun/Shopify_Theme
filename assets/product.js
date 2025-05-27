@@ -118,11 +118,11 @@ class VariantSelector extends HTMLElement {
     const mainWrapper = document.getElementById('main-swiper-wrapper');
     const thumbWrapper = document.querySelector('.mySwiper .swiper-wrapper');
 
-    // Clear existing slides
-    mainWrapper.innerHTML = '';
-    thumbWrapper.innerHTML = '';
-
     if (currentGallery && currentGallery.length > 0) {
+      // Clear existing slides
+      mainWrapper.innerHTML = '';
+      thumbWrapper.innerHTML = '';
+      
       currentGallery.forEach((media, index) => {
         mainWrapper.innerHTML += `
           <div class="swiper-slide">
@@ -135,10 +135,10 @@ class VariantSelector extends HTMLElement {
           </div>
         `;
       });
-    }
 
-    // Reinitialize Swiper
-    this.reinitSwiper();
+      // Reinitialize Swiper
+      this.reinitSwiper();
+    }
   }
 
   reinitSwiper() {
