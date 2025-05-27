@@ -1,98 +1,60 @@
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+{{ 'product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product.js' | asset_url }}" defer></script>
 
 {% assign selected_product = product.selected_or_first_available_variant %}
-
-<style>
-  .mySwiper,
-  .mySwiper2 {
-    display: none;
-  }
-
-  .swiper {
-    width: 100%;
-    height: 300px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .swiper-slide {
-    background-size: cover;
-    background-position: center;
-  }
-
-  .mySwiper2 {
-    height: 80%;
-    width: 100%;
-  }
-
-  .mySwiper {
-    height: 20%;
-    box-sizing: border-box;
-    padding: 10px 0;
-  }
-
-  .mySwiper .swiper-slide {
-    width: 25%;
-    height: 100%;
-    opacity: 0.4;
-  }
-
-  .mySwiper .swiper-slide-thumb-active {
-    opacity: 1;
-  }
-
-  .swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .mySwiper iframe,
-  .mySwiper video {
-    height: 100%;
-    pointer-events: none;
-  }
-
-  .mySwiper2 iframe,
-  .mySwiper2 video {
-    height: 100%;
-  }
-
-  .swiper-button-next,
-  .swiper-button-prev {
-    display: none;
-  }
-</style>
-
+{% assign gallery = selected_product.metafields.custom.variant_gallery %}
 
 <div class="max-w-6xl mx-auto mt-8 py-4 px-4">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
     <div>
+      <div class="swiper mySwiper2 max-h-[500px]">
+        <div class="swiper-wrapper" id="main-swiper-wrapper">
 
-      <div class="swiper mySwiper2">
-        <div class="swiper-wrapper">
-          {% for media in product.media %}
-            <div class="swiper-slide">
-              {% render 'product-media'
-                , media: media %}
-            </div>
-          {% endfor %}
+          {% if gallery.value %}
+
+            {% for media in gallery.value %}
+              <div class="swiper-slide max-h-[560px]">
+                {% render 'product-media'
+                  , media: media %}
+              </div>
+            {% endfor %}
+
+          {% else %}
+            {% for media in product.media %}
+              <div class="swiper-slide">
+                {% render 'product-media'
+                  , media: media %}
+              </div>
+            {% endfor %}
+          {% endif %}
         </div>
+
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
       </div>
 
       <div thumbsSlider="" class="swiper mySwiper">
         <div class="swiper-wrapper">
-          {% for media in product.media %}
-            <div class="swiper-slide">
-              {% render 'product-media'
-                , media: media %}
-            </div>
-          {% endfor %}
+          {% if gallery.value %}
+
+            {% for media in gallery.value %}
+              <div class="swiper-slide">
+                {% render 'product-media'
+                  , media: media %}
+              </div>
+            {% endfor %}
+
+          {% else %}
+            {% for media in product.media %}
+              <div class="swiper-slide">
+                {% render 'product-media'
+                  , media: media %}
+              </div>
+            {% endfor %}
+          {% endif %}
         </div>
       </div>
 
@@ -133,30 +95,69 @@
                 {% unless product.has_only_default_variant %}
                   <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
                     {% for option in product.options_with_values %}
+
                       <p class="mt-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2 text-left" for="option-{{ forloop.index0 }}">{{ option.name }}</label>
-                        <select
-                          class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
-                          name="{{option.name }}"
-                          id="option-{{ forloop.index0 }}">
-                          {% for value in option.values %}
-                            <option
-                              value="{{ value }}"
-                              {% if option.selected_value == value %}
-                              selected="selected"
-                              {% endif %}>{{ value }}</option>
-                          {% endfor %}
-                        </select>
+
+                        {% if option.values[0].swatch.color %}
+                          <div class="flex gap-2">
+
+                            {% for value in option.values %}
+
+                              <div class="relative w-6 h-6">
+                                <input
+                                  type="radio"
+                                  class="color-input variant-input w-6 h-6 rounded-full cursor-pointer"
+                                  value="{{ value.name }}"
+                                  name="{{ option.name }}"
+                                  {% if option.selected_value == value.name %}
+                                  checked
+                                  {% endif %}>
+
+                                <div
+                                  class="color-preview absolute inset-0 pointer-events-none w-6 h-6 rounded-full"
+                                  style="
+                                    background: {{ value.swatch.color }}"
+                                  class="color-preview w-6 h-6 rounded-full"></div>
+                                </div>
+
+                            {% endfor %}
+
+                          </div>
+
+                        {% else %}
+                          <select
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
+                            name="{{option.name }}"
+                            id="option-{{ forloop.index0 }}">
+                            {% for value in option.values %}
+                              <option
+                                value="{{ value }}"
+                                {% if option.selected_value == value %}
+                                selected="selected"
+                                {% endif %}>{{ value }}</option>
+                            {% endfor %}
+                          </select>
+                        {% endif %}
+
                       </p>
 
                       <script type="application/json">
                         {{ product.variants |  json }}
                       </script>
+
+                      <script type="application/json" id="variant-galleries">
+                          {
+                            {% for variant in product.variants %}
+                              "{{ variant.id }}": {{ variant.metafields.custom.variant_gallery.value | json }}{% unless forloop.last %},{% endunless %}
+                            {% endfor %}
+                          }
+                      </script>
+
                     {% endfor %}
                   </variant-selector>
                 {% endunless %}
               </div>
-
 
             {% when "quantity" %}
               <p class="mt-4 w-20">
@@ -200,111 +201,6 @@
     </div>
   </div>
 
-
-  <script>
-    class VariantSelector extends HTMLElement {
-      constructor() {
-        super();
-        this.addEventListener("change", this.onVariantChange);
-      }
-
-      onVariantChange() {
-        this.getSelectedOptions();
-        this.getSelectedVariant();
-        this.updateUrl();
-        this.updateFormID();
-        this.updateSubmitBtn();
-        this.updatePrice();
-      }
-
-      getSelectedOptions() {
-        this.options = Array.from(this.querySelectorAll("select"), (select) => select.value);
-      }
-
-      getVariantJSON() {
-        this.variandData = this.variandData 
-        || JSON.parse(this.querySelector('script[type="application/json"]').textContent);
-
-        return this.variandData;
-      }
-
-      getSelectedVariant() {
-        const selectedProductTitle = this.options.join(' / ');
-
-        this.selectedVariant = this.getVariantJSON().find(variant => variant.title === selectedProductTitle);
-
-        return this.selectedVariant;
-      }
-
-      updateUrl() {
-        window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.selectedVariant.id}`);
-      }
-
-      updateFormID() {
-        const formInput = document.querySelector('#product-form input[name="id"]')
-        formInput.value = this.selectedVariant.id;
-      }
-
-      updatePrice() {
-        fetch(`${this.dataset.url}?variant=${this.selectedVariant.id}&section_id=${this.dataset.section}`)
-        .then((response) => response.text())
-        .then((responseText) => {
-            const id = `price-${this.dataset.section}`;
-  
-            const html = new DOMParser().parseFromString(responseText, 'text/html');
-
-            const oldPrice = document.getElementById(id);
-
-            const newPrice = html.getElementById(id);
-
-            if(oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
-        });
-        }
-
-      updateSubmitBtn() {
-        const submitBtn = document.querySelector('.form-submit-btn');
-
-        if(this.selectedVariant.available === false) {
-          submitBtn.setAttribute('disabled', true);
-          submitBtn.textContent = 'Sold out';
-        } else {
-          submitBtn.removeAttribute('disabled');
-          submitBtn.textContent = 'Add to cart';
-        }
-      }
-    }
-
-
-    customElements.define("variant-selector", VariantSelector);
-  </script>
-  <!-- Initialize Swiper -->
-  <script>
-    const interval = setInterval(() => {
-      if(!window?.Swiper) return;
-
-      const swiper = new Swiper(".mySwiper", {
-        // loop: true,
-        spaceBetween: 10,
-        slidesPerView: 4,
-        freeMode: true,
-        watchSlidesProgress: true,
-        navigation: false
-      });
-      
-      const swiper2 = new Swiper(".mySwiper2", {
-        // loop: true,
-        spaceBetween: 10,
-        thumbs: {
-          swiper: swiper,
-        },
-      });
-
-      document.querySelector('.mySwiper2').style.display = 'block';
-      document.querySelector('.mySwiper').style.display = 'block';
-
-      clearInterval(interval);
-    }, 100)
-  </script>
 
   {% schema %}
     {

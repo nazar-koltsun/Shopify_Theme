@@ -1,7 +1,6 @@
 {
   "article": [],
   "blog": [],
-  "brand": [],
   "collection": [],
   "company": [],
   "company_location": [],
@@ -101,6 +100,17 @@
       }
     }
   ],
-  "variant": [],
+  "variant": [
+    {
+      "key": "variant_gallery",
+      "namespace": "custom",
+      "name": "variant gallery",
+      "description": "",
+      "type": {
+        "name": "list.file_reference",
+        "category": "REFERENCE"
+      }
+    }
+  ],
   "shop": []
 }
