@@ -147,11 +147,20 @@
                       </script>
 
                       <script type="application/json" id="variant-galleries">
-                          {
-                            {% for variant in product.variants %}
-                              "{{ variant.id }}": {{ variant.metafields.custom.variant_gallery.value | json }}{% unless forloop.last %},{% endunless %}
-                            {% endfor %}
-                          }
+                        {
+                          {% for variant in product.variants %}
+                            "{{ variant.id }}": 
+                            {% if variant.metafields.custom.variant_gallery.value %}
+                              {{ variant.metafields.custom.variant_gallery.value | map: 'src' | json }}
+                              {% else %}
+                                [
+                                  {% for media in product.media %}
+                                    "{{ shop.secure_url | append: '/cdn/shop/' | append: media }}"{% unless forloop.last %},{% endunless %}
+                                  {% endfor %}
+                                ]
+                            {% endif %}{% unless forloop.last %},{% endunless %}
+                          {% endfor %}
+                        }
                       </script>
 
                     {% endfor %}
