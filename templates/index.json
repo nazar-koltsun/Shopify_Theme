@@ -12,7 +12,7 @@
     "featured-collection": {
       "type": "featured-collection",
       "settings": {
-        "title": "Featured collection ddsf",
+        "title": "Featured collection",
         "featured_collection": "all",
         "products_count": 4
       }
@@ -20,7 +20,7 @@
     "contact_form_nUCr4y": {
       "type": "contact-form",
       "settings": {
-        "title": ""
+        "title": "Contact Us"
       }
     }
   },
