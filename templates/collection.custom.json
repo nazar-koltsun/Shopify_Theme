@@ -1,9 +1,0 @@
-{
-  "name": "Custom Collection Layout",
-  "sections": {
-    "template": {
-      "type": "collection-custom-layout"
-    }
-  },
-  "order": ["template"]
-}

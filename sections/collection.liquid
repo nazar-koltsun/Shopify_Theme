@@ -1,16 +1,26 @@
+<style>
+  .collection-wrapper {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    column-gap: 20px;
+    row-gap: 50px;
+  }
+
+  .collection-wrapper > div:first-child {
+    grid-column: 1/-1;
+  }
+</style>
+
 {% assign products_per_page = section.settings.products_per_page %}
 
-<div class="max-w-6xl m-auto mt-8 px-4">
-    <a class="text-base text-gray-500 hover:underline mb-4" href="{{ routes.collections_url }}">Go back to collections</a>
-  <h1 class="text-3xl font-bold text-center">{{ collection.title }}</h1>
-
+<div>
   {% paginate collection.products by products_per_page %}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for product in collection.products %}
         {% render 'product-card'
           , product: product %}
       {% else %}
-        <p>no matches</p>
+        <p>No products matches</p>
       {% endfor %}
     </div>
     {% if paginate.pages > 1 %}
