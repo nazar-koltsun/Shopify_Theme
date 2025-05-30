@@ -1,9 +1,16 @@
 {
+  "name": "Custom Collection Layout",
+  "wrapper": "div.collection-wrapper.max-w-6xl.m-auto.mt-8.px-4",
   "sections": {
-    "template": {
-      "type": "collection",
+    "head": {
+      "type": "collection-top-content",
+    },
+    "filter": {
+      "type": "collection-filter"
+    },
+    "list": {
+      "type": "collection"
     }
   },
-
-  "order": ["template"]
+  "order": ["head", "filter", "list"]
 }
