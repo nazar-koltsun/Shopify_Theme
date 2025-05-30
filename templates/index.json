@@ -17,7 +17,7 @@
         "products_count": 4
       }
     },
-    "contact_form_nUCr4y": {
+    "contact-form": {
       "type": "contact-form",
       "settings": {
         "title": "Contact Us"
@@ -26,6 +26,6 @@
   },
   "order": [
     "featured-collection",
-    "contact_form_nUCr4y"
+    "contact-form"
   ]
 }
