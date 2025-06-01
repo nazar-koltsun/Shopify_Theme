@@ -8,15 +8,15 @@
 {% assign gallery = selected_product.metafields.custom.variant_gallery %}
 
 <div class="max-w-6xl mx-auto mt-8 py-4 px-4">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+  <div class="grid grid-cols-1 items-start md:grid-cols-2 gap-10">
     <div>
-      <div class="swiper mySwiper2 max-h-[500px]">
+      <div class="swiper mySwiper2">
         <div class="swiper-wrapper" id="main-swiper-wrapper">
 
           {% if gallery.value %}
 
             {% for media in gallery.value %}
-              <div class="swiper-slide max-h-[560px]">
+              <div class="swiper-slide aspect-square">
                 {% render 'product-media'
                   , media: media %}
               </div>
@@ -24,7 +24,7 @@
 
           {% else %}
             {% for media in product.media %}
-              <div class="swiper-slide">
+              <div class="swiper-slide aspect-square">
                 {% render 'product-media'
                   , media: media %}
               </div>
@@ -41,7 +41,7 @@
           {% if gallery.value %}
 
             {% for media in gallery.value %}
-              <div class="swiper-slide">
+              <div class="swiper-slide aspect-square">
                 {% render 'product-media'
                   , media: media %}
               </div>
@@ -49,7 +49,7 @@
 
           {% else %}
             {% for media in product.media %}
-              <div class="swiper-slide">
+              <div class="swiper-slide aspect-square">
                 {% render 'product-media'
                   , media: media %}
               </div>

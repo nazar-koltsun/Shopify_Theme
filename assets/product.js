@@ -125,12 +125,12 @@ class VariantSelector extends HTMLElement {
       
       currentGallery.forEach((media, index) => {
         mainWrapper.innerHTML += `
-          <div class="swiper-slide">
-            <img class="w-full h-full object-cover aspect-square" width="200" height="200" src='${media}' alt='' />
+          <div class="swiper-slide aspect-square">
+            <img class="w-full h-full object-cover" width="200" height="200" src='${media}' alt='' />
           </div>
         `;
         thumbWrapper.innerHTML += `
-          <div class="swiper-slide">
+          <div class="swiper-slide aspect-square">
             <img src='${media}' alt='' />
           </div>
         `;
