@@ -9,6 +9,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'max-860': { max: '860px' },
+        'max-720': { max: '720px' },
+        'max-380': { max: '380px' },
+      },
     },
   },
   plugins: [],

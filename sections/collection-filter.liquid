@@ -1,64 +1,98 @@
 <div>
-  <h2 class="text-xl font-medium">{{ section.settings.filter_title }}:</h2>
+  <button class="show-filter-btn hidden w-12 h-12 max-860:flex justify-center items-center transition duration-300 ease-in-out hover:opacity-50">
+    {% render 'icon-filter' %}
+  </button>
 
-  {% if collection.filters.size > 0 %}
-    <form
-      method="get"
-      id="CollectionFiltersForm"
-      class="space-y-4 mt-5">
-      {% for filter in collection.filters %}
+  <div class="filter-container max-860:hidden max-860:absolute max-860:top-0 max-860:left-0 max-860:w-[250px] max-860:h-full max-860:p-4 max-860:pt-12 max-860:bg-white max-860:z-20">
+    <button class="close-filter-btn absolute right-0 top-0 hidden w-12 h-12 max-860:flex justify-center items-center transition duration-300 ease-in-out hover:opacity-50">
+      {% render 'icon-close' %}
+    </button>
+
+    <h2 class="text-xl font-medium">{{ section.settings.filter_title }}:</h2>
+
+    {% if collection.filters.size > 0 %}
+      <form
+        method="get"
+        id="CollectionFiltersForm"
+        class="space-y-4 mt-5">
+        {% for filter in collection.filters %}
+          <div>
+            <h3 class="text-sm font-medium mb-2">{{ filter.label }}</h3>
+
+            {% case filter.type %}
+              {% when 'list' %}
+                <ul class="space-y-1">
+                  {% for value in filter.values %}
+                    <li>
+                      <label class="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          name="{{ filter.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}
+                          checked{% endif %}
+                          {% if value.count == 0 and value.active == false %}
+                          disabled{% endif %}
+                          class="form-checkbox">
+                        <span>{{ value.label }} ({{ value.count }})</span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+
+              {% when 'price_range' %}
+                <div class="flex space-x-2">
+                  <input
+                    name="{{ filter.min_value.param_name }}"
+                    type="number"
+                    min="0"
+                    placeholder="Min"
+                    value="{{ filter.min_value.value }}"
+                    class="w-1/2 border px-2 py-1 rounded">
+                  <input
+                    name="{{ filter.max_value.param_name }}"
+                    type="number"
+                    min="0"
+                    placeholder="Max"
+                    value="{{ filter.max_value.value }}"
+                    class="w-1/2 border px-2 py-1 rounded">
+                </div>
+            {% endcase %}
+          </div>
+        {% endfor %}
+
         <div>
-          <h3 class="text-sm font-medium mb-2">{{ filter.label }}</h3>
-
-          {% case filter.type %}
-            {% when 'list' %}
-              <ul class="space-y-1">
-                {% for value in filter.values %}
-                  <li>
-                    <label class="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        name="{{ filter.param_name }}"
-                        value="{{ value.value }}"
-                        {% if value.active %}
-                        checked{% endif %}
-                        {% if value.count == 0 and value.active == false %}
-                        disabled{% endif %}
-                        class="form-checkbox">
-                      <span>{{ value.label }} ({{ value.count }})</span>
-                    </label>
-                  </li>
-                {% endfor %}
-              </ul>
-
-            {% when 'price_range' %}
-              <div class="flex space-x-2">
-                <input
-                  name="{{ filter.min_value.param_name }}"
-                  type="number"
-                  min="0"
-                  placeholder="Min"
-                  value="{{ filter.min_value.value }}"
-                  class="w-1/2 border px-2 py-1 rounded">
-                <input
-                  name="{{ filter.max_value.param_name }}"
-                  type="number"
-                  min="0"
-                  placeholder="Max"
-                  value="{{ filter.max_value.value }}"
-                  class="w-1/2 border px-2 py-1 rounded">
-              </div>
-          {% endcase %}
+          <button type="submit" class="mt-4 bg-black text-white px-4 py-2 rounded">Apply Filters</button>
         </div>
-      {% endfor %}
+      </form>
+    {% endif %}
+  </div>
 
-      <div>
-        <button type="submit" class="mt-4 bg-black text-white px-4 py-2 rounded">Apply Filters</button>
-      </div>
-    </form>
-  {% endif %}
-
+  <div class="bg-backdrop hidden bg-black/50 max-860:absolute max-860:top-0 max-860:left-0 w-full h-full z-10"></div>
 </div>
+
+<script>
+  const showFilterBtn = document.querySelector('.show-filter-btn');
+  const filterContainer = document.querySelector('.filter-container');
+  const closeFilterBtn = document.querySelector('.close-filter-btn');
+  const bgBackdrop = document.querySelector('.bg-backdrop');
+
+  const openFilter = () => {
+    document.body.style.overflow = 'hidden';
+    filterContainer.classList.remove('max-860:hidden');
+    bgBackdrop.classList.add('max-860:block');
+  }
+
+  const closeFilter = () => {
+    document.body.style.overflow = 'auto';
+    filterContainer.classList.add('max-860:hidden');
+    bgBackdrop.classList.remove('max-860:block');
+  }
+
+  showFilterBtn.addEventListener('click', openFilter);
+  closeFilterBtn.addEventListener('click', closeFilter);
+  bgBackdrop.addEventListener('click', closeFilter);
+</script>
 
 
 {% schema %}
