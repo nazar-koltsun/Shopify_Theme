@@ -1,11 +1,11 @@
 <div>
-  Filter:
+  <h2 class="text-xl font-medium">{{ section.settings.filter_title }}:</h2>
 
   {% if collection.filters.size > 0 %}
     <form
       method="get"
       id="CollectionFiltersForm"
-      class="space-y-4">
+      class="space-y-4 mt-5">
       {% for filter in collection.filters %}
         <div>
           <h3 class="text-sm font-medium mb-2">{{ filter.label }}</h3>
@@ -59,3 +59,18 @@
   {% endif %}
 
 </div>
+
+
+{% schema %}
+  {
+    "name": "Collection Filter",
+    "settings": [
+      {
+        "type": "text",
+        "id": "filter_title",
+        "label": "Filter title",
+        "default": "Filter"
+      }
+    ]
+  }
+{% endschema %}
