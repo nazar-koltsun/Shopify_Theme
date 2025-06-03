@@ -1,6 +1,6 @@
 <div>
-  <button class="show-filter-btn hidden w-12 h-12 max-860:flex justify-center items-center transition duration-300 ease-in-out hover:opacity-50">
-    {% render 'icon-filter' %}
+  <button class="show-filter-btn hidden max-860:flex justify-center items-center gap-1 transition duration-300 ease-in-out hover:opacity-50">
+    Filter {% render 'icon-filter' %}
   </button>
 
   <div class="filter-container max-860:hidden max-860:absolute max-860:top-0 max-860:left-0 max-860:w-[250px] max-860:h-full max-860:p-4 max-860:pt-12 max-860:bg-white max-860:z-20">
@@ -72,26 +72,69 @@
 </div>
 
 <script>
-  const showFilterBtn = document.querySelector('.show-filter-btn');
-  const filterContainer = document.querySelector('.filter-container');
-  const closeFilterBtn = document.querySelector('.close-filter-btn');
-  const bgBackdrop = document.querySelector('.bg-backdrop');
-
-  const openFilter = () => {
-    document.body.style.overflow = 'hidden';
-    filterContainer.classList.remove('max-860:hidden');
-    bgBackdrop.classList.add('max-860:block');
-  }
-
-  const closeFilter = () => {
-    document.body.style.overflow = 'auto';
-    filterContainer.classList.add('max-860:hidden');
-    bgBackdrop.classList.remove('max-860:block');
-  }
-
-  showFilterBtn.addEventListener('click', openFilter);
-  closeFilterBtn.addEventListener('click', closeFilter);
-  bgBackdrop.addEventListener('click', closeFilter);
+  document.addEventListener('DOMContentLoaded', () => {
+    const showFilterBtn = document.querySelector('.show-filter-btn');
+    const filterContainer = document.querySelector('.filter-container');
+    const closeFilterBtn = document.querySelector('.close-filter-btn');
+    const bgBackdrop = document.querySelector('.bg-backdrop');
+    const productGrid = document.querySelector('.product-grid');
+    const pagination = document.querySelector('.pagination');
+    const filtersForm = document.querySelector('#CollectionFiltersForm');
+  
+    const openFilter = () => {
+      document.body.style.overflow = 'hidden';
+      filterContainer.classList.remove('max-860:hidden');
+      bgBackdrop.classList.add('max-860:block');
+    }
+  
+    const closeFilter = () => {
+      document.body.style.overflow = 'auto';
+      filterContainer.classList.add('max-860:hidden');
+      bgBackdrop.classList.remove('max-860:block');
+    }
+  
+    showFilterBtn.addEventListener('click', openFilter);
+    closeFilterBtn.addEventListener('click', closeFilter);
+    bgBackdrop.addEventListener('click', closeFilter);
+  
+    filtersForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+  
+      const url = new URL(window.location.href);
+      const formData = new FormData(filtersForm);
+  
+      // Clear existing search params
+      url.search = '';
+      formData.forEach((value, key) => {
+        url.searchParams.append(key, value);
+      });
+  
+      // Fetch the filtered collection page
+      try {
+        const response = await fetch(url.toString());
+        const pageTextContent = await response.text();
+        const tempDOM = new DOMParser().parseFromString(pageTextContent, 'text/html');
+  
+        // Get the new product grid HTML
+        const newProductGrid = tempDOM.querySelector('.product-grid');
+        const newPagination = tempDOM.querySelector('.pagination');
+  
+        if (newProductGrid && productGrid) {
+          productGrid.innerHTML = newProductGrid.innerHTML;
+          pagination.innerHTML = newPagination?.innerHTML || null;
+  
+          // Optionally update the URL without reloading
+          window.history.pushState({}, '', url.toString());
+  
+          // Close the filter drawer on mobile
+          closeFilter();
+        }
+      }
+      catch(error) {
+        console.error('Filter AJAX failed:', error);
+      }
+    })
+  });
 </script>
 
 
