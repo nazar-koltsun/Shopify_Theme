@@ -20,7 +20,9 @@
 {% assign products_per_page = section.settings.products_per_page %}
 
 <div>
-  {% render 'search' %}
+  <h1 class="text-3xl font-bold text-center">{{ collection.title }}</h1>
+
+  {% render 'search', class: 'mt-4' %}
 
   {% paginate collection.products by products_per_page %}
     <div class="product-grid mt-5 grid md:grid-cols-2 lg:grid-cols-3 max-860:grid-cols-3 max-720:grid-cols-2 max-380:grid-cols-1 gap-6 max-720:gap-4">
