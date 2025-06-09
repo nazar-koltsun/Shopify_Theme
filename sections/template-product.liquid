@@ -1,32 +1,32 @@
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 {{ 'product.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'product.js' | asset_url }}" defer></script>
 
 <style>
-  .jdgm-widget .jdgm-rev-widg {
-    max-width: 1152px;
-    margin: 0 auto;
-    padding-top: 60px;
-}
-
-.jdgm-widget .jdgm-write-rev-link {
-  margin: 0;
-  margin-left: auto;
-}
-
-@media (min-width: 992px) {
-  body .jdgm-widget .jdgm-rev-widg__header .jdgm-row-stars {
-    justify-content: space-between;
+    .jdgm-widget .jdgm-rev-widg {
+      max-width: 1152px;
+      margin: 0 auto;
+      padding-top: 60px;
   }
-  
-  #judgeme_product_reviews .jdgm-widget .jdgm-row-stars .jdgm-rev-widg__summary,
-  #judgeme_product_reviews .jdgm-widget .jdgm-row-stars .jdgm-widget-actions-wrapper {
-    align-items: start;
-    width: 100%;
+
+  .jdgm-widget .jdgm-write-rev-link {
+    margin: 0;
+    margin-left: auto;
   }
-}
+
+  @media (min-width: 992px) {
+    body .jdgm-widget .jdgm-rev-widg__header .jdgm-row-stars {
+      justify-content: space-between;
+    }
+
+    #judgeme_product_reviews .jdgm-row-stars .jdgm-rev-widg__summary,
+    #judgeme_product_reviews .jdgm-row-stars .jdgm-widget-actions-wrapper {
+      align-items: start;
+      width: 100%;
+    }
+  }
 </style>
 
 {% assign selected_product = product.selected_or_first_available_variant %}
@@ -37,21 +37,17 @@
     <div>
       <div class="swiper mySwiper2">
         <div class="swiper-wrapper" id="main-swiper-wrapper">
-
           {% if gallery.value %}
-
             {% for media in gallery.value %}
               <div class="swiper-slide aspect-square">
-                {% render 'product-media'
-                  , media: media %}
+                {% render 'product-media', media: media %}
               </div>
             {% endfor %}
 
           {% else %}
             {% for media in product.media %}
               <div class="swiper-slide aspect-square">
-                {% render 'product-media'
-                  , media: media %}
+                {% render 'product-media', media: media %}
               </div>
             {% endfor %}
           {% endif %}
@@ -64,41 +60,34 @@
       <div thumbsSlider="" class="swiper mySwiper">
         <div class="swiper-wrapper">
           {% if gallery.value %}
-
             {% for media in gallery.value %}
               <div class="swiper-slide aspect-square">
-                {% render 'product-media'
-                  , media: media %}
+                {% render 'product-media', media: media %}
               </div>
             {% endfor %}
 
           {% else %}
             {% for media in product.media %}
               <div class="swiper-slide aspect-square">
-                {% render 'product-media'
-                  , media: media %}
+                {% render 'product-media', media: media %}
               </div>
             {% endfor %}
           {% endif %}
         </div>
       </div>
-
     </div>
 
     <div>
-      {% form 'product'
-        , product
-        , id: 'product-form'
-        , novalidate: "novalidate" %}
+      {% form 'product', product, id: 'product-form', novalidate: 'novalidate' %}
         {% for block in section.blocks %}
           {% case block.type %}
-            {% when "vendor" %}
+            {% when 'vendor' %}
               <p class="text-gray-500">{{ product.vendor }}</p>
 
-            {% when "title" %}
+            {% when 'title' %}
               <h1 class="text-3xl font-bold mt-4">{{ product.title }}</h1>
 
-            {% when "price" %}
+            {% when 'price' %}
               <div class="flex gap-3 items-center mt-4" id="price-{{ section.id }}">
                 {% if selected_product.compare_at_price %}
                   <span class="line-through">{{ selected_product.compare_at_price | money }}</span>
@@ -111,24 +100,27 @@
                 {% endif %}
               </div>
 
-            {% when "variants" %}
+            {% when 'variants' %}
               <div class="mt-4">
                 <input
                   type="hidden"
                   name="id"
-                  value="{{ selected_product.id }}">
+                  value="{{ selected_product.id }}"
+                >
                 {% unless product.has_only_default_variant %}
                   <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
                     {% for option in product.options_with_values %}
-
                       <p class="mt-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2 text-left" for="option-{{ forloop.index0 }}">{{ option.name }}</label>
+                        <label
+                          class="block text-gray-700 text-sm font-bold mb-2 text-left"
+                          for="option-{{ forloop.index0 }}"
+                        >
+                          {{- option.name -}}
+                        </label>
 
                         {% if option.values[0].swatch.color %}
                           <div class="flex gap-2">
-
                             {% for value in option.values %}
-
                               <div class="relative w-6 h-6">
                                 <input
                                   type="radio"
@@ -136,35 +128,37 @@
                                   value="{{ value.name }}"
                                   name="{{ option.name }}"
                                   {% if option.selected_value == value.name %}
-                                  checked
-                                  {% endif %}>
+                                    checked
+                                  {% endif %}
+                                >
 
                                 <div
                                   class="color-preview absolute inset-0 pointer-events-none w-6 h-6 rounded-full"
-                                  style="
-                                    background: {{ value.swatch.color }}"
-                                  class="color-preview w-6 h-6 rounded-full"></div>
-                                </div>
-
+                                  style="                                    background: {{ value.swatch.color }}"
+                                  class="color-preview w-6 h-6 rounded-full"
+                                ></div>
+                              </div>
                             {% endfor %}
-
                           </div>
 
                         {% else %}
                           <select
                             class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-dashed focus:shadow-outline"
                             name="{{option.name }}"
-                            id="option-{{ forloop.index0 }}">
+                            id="option-{{ forloop.index0 }}"
+                          >
                             {% for value in option.values %}
                               <option
                                 value="{{ value }}"
                                 {% if option.selected_value == value %}
-                                selected="selected"
-                                {% endif %}>{{ value }}</option>
+                                  selected="selected"
+                                {% endif %}
+                              >
+                                {{ value }}
+                              </option>
                             {% endfor %}
                           </select>
                         {% endif %}
-
                       </p>
 
                       <script type="application/json">
@@ -174,7 +168,7 @@
                       <script type="application/json" id="variant-galleries">
                         {
                           {% for variant in product.variants %}
-                            "{{ variant.id }}": 
+                            "{{ variant.id }}":
                             {% if variant.metafields.custom.variant_gallery.value %}
                               {{ variant.metafields.custom.variant_gallery.value | map: 'src' | json }}
                               {% else %}
@@ -187,13 +181,12 @@
                           {% endfor %}
                         }
                       </script>
-
                     {% endfor %}
                   </variant-selector>
                 {% endunless %}
               </div>
 
-            {% when "quantity" %}
+            {% when 'quantity' %}
               <p class="mt-4 w-20">
                 <label class="block text-gray-700 text-sm font-bold mb-2 text-left" for="Quantity">Quantity</label>
                 <input
@@ -202,21 +195,23 @@
                   id="Quantity"
                   name="quantity"
                   value="1"
-                  min="1">
+                  min="1"
+                >
               </p>
 
-            {% when "description" %}
+            {% when 'description' %}
               <p class="mt-4">
                 {{ product.description }}
               </p>
 
-            {% when "add_to_cart" %}
+            {% when 'add_to_cart' %}
               <button
                 class="form-submit-btn bg-gray-900 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 disabled:bg-gray-500 disabled:pointer-events-none"
                 type="submit"
                 {% if selected_product.available == false %}
-                disabled
-                {% endif %}>
+                  disabled
+                {% endif %}
+              >
                 {% if selected_product.available == false %}
                   Sold out
                 {% else %}
@@ -224,54 +219,51 @@
                 {% endif %}
               </button>
 
-          {% else %}
-            {% endcase %}
+            {% else %}
 
-          {% endfor %}
-        {% endform %}
-
-
-      </div>
+          {% endcase %}
+        {% endfor %}
+      {% endform %}
     </div>
   </div>
+</div>
 
-
-  {% schema %}
+{% schema %}
+{
+  "name": "Product",
+  "blocks": [
     {
-      "name": "Product",
-      "blocks": [
-        {
-          "type": "vendor",
-          "name": "Vendor",
-          "limit": 1
-        },
-        {
-          "type": "title",
-          "name": "Title",
-          "limit": 1
-        },
-        {
-          "type": "price",
-          "name": "Price",
-          "limit": 1
-        },
-        {
-          "type": "variants",
-          "name": "Product variants picker",
-          "limit": 1
-        }, {
-          "type": "quantity",
-          "name": "Quantity",
-          "limit": 1
-        }, {
-          "type": "description",
-          "name": "Description",
-          "limit": 1
-        }, {
-          "type": "add_to_cart",
-          "name": "Add to cart",
-          "limit": 1
-        }
-      ]
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variants",
+      "name": "Product variants picker",
+      "limit": 1
+    }, {
+      "type": "quantity",
+      "name": "Quantity",
+      "limit": 1
+    }, {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    }, {
+      "type": "add_to_cart",
+      "name": "Add to cart",
+      "limit": 1
     }
-  {% endschema %}
+  ]
+}
+{% endschema %}
