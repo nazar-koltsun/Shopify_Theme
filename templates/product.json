@@ -1,32 +1,98 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "template": {
       "type": "template-product",
       "blocks": {
         "vendor": {
-          "type": "vendor"
+          "type": "vendor",
+          "settings": {}
         },
         "title": {
-          "type": "title"
+          "type": "title",
+          "settings": {}
         },
         "price": {
-          "type": "price"
+          "type": "price",
+          "settings": {}
         },
         "variants": {
-          "type": "variants"
+          "type": "variants",
+          "settings": {}
         },
         "quantity": {
-          "type": "quantity"
+          "type": "quantity",
+          "settings": {}
         },
         "description": {
-          "type": "description"
+          "type": "description",
+          "settings": {}
         },
         "add_to_cart": {
-          "type": "add_to_cart"
+          "type": "add_to_cart",
+          "settings": {}
         }
       },
-      "block_order": ["vendor", "title", "price", "variants", "quantity", "description", "add_to_cart"]
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variants",
+        "quantity",
+        "description",
+        "add_to_cart"
+      ],
+      "settings": {}
+    },
+    "1749466266364ab917": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_review_widget_KPV8Yi": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_widget_KPV8Yi"
+      ],
+      "settings": {}
+    },
+    "1749466215ea71167d": {
+      "type": "apps",
+      "settings": {}
+    },
+    "1749466200eccce6e1": {
+      "type": "apps",
+      "settings": {}
+    },
+    "17494661847df4c893": {
+      "type": "apps",
+      "settings": {}
+    },
+    "1749466137b2525221": {
+      "type": "apps",
+      "settings": {}
+    },
+    "17494661249164cb39": {
+      "type": "apps",
+      "settings": {}
     }
   },
-  "order": ["template"]
+  "order": [
+    "template",
+    "1749466266364ab917",
+    "1749466215ea71167d",
+    "1749466200eccce6e1",
+    "17494661847df4c893",
+    "1749466137b2525221",
+    "17494661249164cb39"
+  ]
 }
