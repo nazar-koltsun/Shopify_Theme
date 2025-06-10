@@ -118,7 +118,7 @@
 
             {% when 'title' %}
               <h1 class="text-3xl font-bold mt-4">{{ product.title }}</h1>
-
+              {{ product.metafields.judgeme.badge }}
             {% when 'price' %}
               <div class="flex gap-3 items-center mt-4" id="price-{{ section.id }}">
                 {% if selected_product.compare_at_price %}
@@ -259,6 +259,13 @@
       {% endform %}
     </div>
   </div>
+
+  <!-- Start of Judge.me code --> 
+  <div id='judgeme_product_reviews' class='jdgm-widget jdgm-review-widget' data-id='{{ product.id }}'> 
+    {{ product.metafields.judgeme.widget }} 
+  </div> 
+  <!-- End of Judge.me code -->
+
 </div>
 
 {% schema %}
