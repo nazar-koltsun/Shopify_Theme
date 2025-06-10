@@ -604,6 +604,10 @@ video {
   pointer-events: none;
 }
 
+.visible {
+  visibility: visible;
+}
+
 .fixed {
   position: fixed;
 }
@@ -701,6 +705,10 @@ video {
   margin-right: -0.5rem;
 }
 
+.-mt-4 {
+  margin-top: -1rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -755,10 +763,6 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mt-7 {
-  margin-top: 1.75rem;
 }
 
 .mt-8 {
