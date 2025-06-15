@@ -1,7 +1,24 @@
 <div class="max-w-6xl mx-auto mt-8 py-4 px-4">
   <h1 class="text-3xl font-bold text-center">{{ page.title }}</h1>
+
+  {% if section.settings.sub-title != blank %}
+    <p class="text-center">{{ section.settings.sub-title }}</p>
+  {% endif %}
   
   <p class="mt-12">
     {{ page.content }}
   </p>
 </div>
+
+{% schema %}
+  {
+    "name": "Default page",
+    "settings": [
+      {
+        "type": "text",
+        "id": "sub-title",
+        "label": "Subtitle"
+      }
+    ]
+  }
+{% endschema %}
