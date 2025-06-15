@@ -1,5 +1,17 @@
-<div>
+<div class="flex ml-auto gap-5 justify-between">
   {{ shop.name }}
+
+  <ul class="flex gap-4">
+    <li>
+      <a href="{{ blogs['news'].url }}" class="hover:underline">News</a>
+    </li>
+    <li>
+      <a href="{{ pages['about-us'].url }}" class="hover:underline">About Us</a>
+    </li>
+    <li>
+      <a href="{{ pages['contact'].url }}" class="hover:underline">Contact Us</a>
+    </li>
+  </ul>
 </div>
 
 <div class="w-full text-center mt-5 border-t border-t-gray-500">
