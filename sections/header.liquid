@@ -66,8 +66,14 @@
           {% render 'icon-search' %}
         </button>
 
-        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900">
+        <a href="{{routes.cart_url}}" class="relative whitespace-nowrap text-base text-gray-500 hover:text-gray-900">
           {% render 'icon-shopping-bag' %}
+
+          {% if cart.item_count > 0 %}
+            <div class="absolute -right-4 -top-4 flex justify-center items-center w-7 h-7 bg-black rounded-full">
+              <span class="text-white text-sm">{{ cart.item_count }}</span>              
+            </div>
+          {% endif %}
         </a>
 
         {% if shop.customer_accounts_enabled %}
