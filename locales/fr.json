@@ -19,7 +19,8 @@
     "product": {
       "quantity": "Quantité",
       "add_to_cart": "Ajouter au panier",
-      "sold_out": "Rupture de stock"
+      "sold_out": "Rupture de stock",
+      "sale": "Vente",
     }
   }
 }
