@@ -16,7 +16,7 @@
   },
   "products": {
     "product": {
-      "quantity": "Quantity",
+      "quantity": "Quantity text",
       "add_to_cart": "Add to Cart",
       "sold_out": "Sold Out"
     }
