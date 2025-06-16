@@ -1,17 +1,15 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "general": {
     "404": {
-      "title": "Non trouvé",
+      "title": "Pas trouvé",
       "subtext_html": "La page que vous recherchez n'existe pas"
+    }
+  },
+  "products": {
+    "product": {
+      "quantity": "Quantité",
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Rupture de stock"
     }
   }
 }
