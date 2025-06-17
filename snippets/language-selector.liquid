@@ -1,0 +1,49 @@
+{% assign current_locale = request.locale %}
+{% assign available_locales = localization.available_languages %}
+{% assign primary_locale = available_locales | where: "primary", true | first %}
+
+<div class="{{ class }}">
+  <select id="language-select" class="language-select-dropdown">
+    {% for locale in available_locales %}
+      <option value="{{ locale.iso_code }}" {% if locale.iso_code == current_locale.iso_code %}selected{% endif %}>
+        {{ locale.endonym_name | capitalize }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <script id="language-switcher-data" type="application/json">
+    {
+      "currentPrefix": "{{ request.locale.root_url }}",
+      "primaryLocale": "{{ primary_locale.iso_code }}"
+    }
+  </script>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const selector = document.getElementById('language-select');
+    const localeData = JSON.parse(document.getElementById('language-switcher-data').textContent);
+    const currentPrefix = localeData.currentPrefix.endsWith('/') ? localeData.currentPrefix : localeData.currentPrefix + '/';
+    const primaryLocale = localeData.primaryLocale;
+
+    selector.addEventListener('change', function () {
+      const selectedLocale = selector.value;
+      const pathname = window.location.pathname;
+
+      // Remove current locale prefix from pathname
+      const cleanPath = pathname.startsWith(currentPrefix) 
+        ? pathname.slice(currentPrefix.length - 1) 
+        : pathname;
+
+      let newPath = selectedLocale === primaryLocale
+        ? cleanPath
+        : `/${selectedLocale}${cleanPath}`;
+
+      // Prevent double slashes
+      newPath = newPath.replace(/\/{2,}/g, '/');
+
+      // Redirect to new language URL
+      window.location.href = newPath;
+    });
+  });
+</script>

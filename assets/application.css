@@ -1467,6 +1467,10 @@ video {
   font-weight: 600;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 .leading-tight {
   line-height: 1.25;
 }

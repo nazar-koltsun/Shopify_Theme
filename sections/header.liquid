@@ -7,8 +7,8 @@
 {% assign menu_link_list = section.settings.menu.links %}
 
 <div class="relative bg-white" x-data="{ isSearchOpen: false }">
-  <div class="mx-auto px-4 sm:px-6">
-    <div class="flex justify-center items-center py-6 md:justify-start md:space-x-10">
+  <div class="mx-auto px-4 py-6 sm:px-6">
+    <div class="flex justify-center items-center md:justify-start md:space-x-10">
       <!-- STORE NAME / STORE LOGO -->
       <div class="flex justify-start lg:flex-1 truncate">
         <h1 class="text-lg lg:text-xl font-bold truncate">{{ shop.name }}</h1>
@@ -161,8 +161,9 @@
           </div>
         </div>
       </div>
-
     </div>
+
+    {% render 'language-selector' %}
   </div>
 
   <div class="absolute left-0 top-0 w-full flex justify-center p-12 bg-white shadow-lg" x-show="isSearchOpen" x-cloak>
