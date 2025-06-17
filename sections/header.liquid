@@ -11,11 +11,11 @@
     <div class="flex justify-center items-center py-6 md:justify-start md:space-x-10">
       <!-- STORE NAME / STORE LOGO -->
       <div class="flex justify-start lg:flex-1 truncate">
-        <h1 class="text-xl font-bold truncate">{{ shop.name }}</h1>
+        <h1 class="text-lg lg:text-xl font-bold truncate">{{ shop.name }}</h1>
       </div>
 
       <!-- NAVIGATION MENU -->
-      <nav class="hidden md:flex space-x-10">
+      <nav class="hidden md:flex space-x-5">
         {% for link in menu_link_list %}
           <div x-data="{ open: false }" class="relative">
             {% if link.links.size > 0 %}
@@ -61,13 +61,13 @@
         {%- endfor %}
       </nav>
 
-      <div class="hidden md:flex items-center justify-end md:flex-1 space-x-5">
+      <div class="hidden md:flex items-center justify-end md:flex-1 space-x-4">
         <button class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900" @click='isSearchOpen = true'>
           {% render 'icon-search' %}
         </button>
 
         <a href="{{routes.cart_url}}" class="relative whitespace-nowrap text-base text-gray-500 hover:text-gray-900">
-          {% render 'icon-shopping-bag' %}
+          {% render 'icon-shopping-bag' %} 
 
           {% if cart.item_count > 0 %}
             <div class="absolute -right-4 -top-4 flex justify-center items-center w-7 h-7 bg-black rounded-full">
@@ -77,8 +77,8 @@
         </a>
 
         {% if shop.customer_accounts_enabled %}
-          <a href="{{routes.account_login_url}}" class="text-base text-gray-500 hover:text-gray-900">Login</a>
-          <a href="{{routes.account_register_url}}" class="text-base text-gray-500 hover:text-gray-900">Register</a>
+          <a href="{{routes.account_login_url}}" class="text-base text-gray-500 hover:text-gray-900">{{ 'navigation.login' | t }}</a>
+          <a href="{{routes.account_register_url}}" class="text-base text-gray-500 hover:text-gray-900">{{ 'navigation.register' | t }}</a>
         {% endif %}
       </div>
 
