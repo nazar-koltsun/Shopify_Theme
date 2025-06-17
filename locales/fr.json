@@ -26,5 +26,10 @@
   "navigation": {
     "login": "Connexion",
     "register": "Inscription",
+  },
+  "pages": {
+    "news": "Nouvelles",
+    "about_us": "À propos de nous",
+    "contact_us": "Contactez-nous",
   }
 }
