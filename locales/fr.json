@@ -10,10 +10,10 @@
 
 {
   "general": {
-    "404": {
-      "title": "Pas trouvé",
-      "subtext_html": "La page que vous recherchez n'existe pas test"
-    }
+    "name": "Nom",
+    "email": "E-mail",
+    "message": "Message",
+    "submit": "Soumettre",
   },
   "products": {
     "product": {
